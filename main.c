@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include "jugador.c"
 
 int main() {
-    printf("Hello, World!\n");
+
     return 0;
 }

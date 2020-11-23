@@ -66,4 +66,16 @@ typedef struct {
     bloque **plano; // MATRIS 8*8 DE TODAS LAS FICHAS
 } tablero;
 
+
+// JUGADOR
+jugador creacion_jugador(int x);
+void creacion_jugadores(jugador*, jugador*);
+void actualizacion_jugador(jugador *jugador);
+void actualizacion_jugadores(jugador*, jugador*);
+void estadisticas(jugador, jugador);
+
+// TABLERO
+void imprimir_tablero();
+
+
 #endif

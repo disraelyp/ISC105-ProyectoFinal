@@ -6,7 +6,15 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Disraely/Desktop/Proyecto Final/main.c
+C:/Users/Disraely/Desktop/Proyecto Final/header.h
+stdlib.h
+-
+string.h
+-
 stdio.h
 -
+
+C:/Users/Disraely/Desktop/Proyecto Final/main.c
+header.h
+C:/Users/Disraely/Desktop/Proyecto Final/header.h
 
