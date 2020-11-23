@@ -1,0 +1,3 @@
+C:/Users/Disraely/Desktop/Proyecto Final/cmake-build-debug/CMakeFiles/Proyecto_Final.dir
+C:/Users/Disraely/Desktop/Proyecto Final/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Disraely/Desktop/Proyecto Final/cmake-build-debug/CMakeFiles/rebuild_cache.dir
