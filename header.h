@@ -25,7 +25,7 @@ typedef enum {
 }posiciones;
 typedef enum {
     basica,
-    reina,
+    dama,
     deshabilitado
 }estado_peon;
 typedef enum {
@@ -35,9 +35,9 @@ typedef enum {
 } estado_juego;
 typedef enum {
     disponible,
-    bloqueado
+    bloqueado,
+    casilla_blanca
 } estado_bloque;
-
 typedef struct {
     char nombre[50];
     int partidas_ganadas;
@@ -50,9 +50,9 @@ typedef struct{
     estado_peon estado;
 }peon;
 typedef struct {
-    peon *peones;
+    peon peones;
     estado_bloque estado;
-    posiciones const posicion;
+    posiciones posicion;
 }bloque;
 typedef struct {
     jugador *jugadorA;
@@ -74,8 +74,18 @@ void actualizacion_jugador(jugador *jugador);
 void actualizacion_jugadores(jugador*, jugador*);
 void estadisticas(jugador, jugador);
 
-// TABLERO
-void imprimir_tablero();
+
+// TABLERO Y PIEZAS
+int posiciones_inciciales(int);
+int posiciones_jugables(int);
+posiciones calcular_posicion(int);
+tablero generar_tablero(jugador*, jugador*);
+peon creacion_peon(jugador*, int);
+bloque creacion_bloque(jugador*, int);
+void imprimir_bloque(bloque);
+void imprimir_tablero(tablero);
+
+
 
 
 #endif
