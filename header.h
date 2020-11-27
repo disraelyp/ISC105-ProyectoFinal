@@ -26,7 +26,6 @@ typedef enum {
 typedef enum {
     basica,
     dama,
-    deshabilitado
 }estado_peon;
 typedef enum {
     curso,
@@ -79,13 +78,15 @@ void estadisticas(jugador, jugador);
 int posiciones_inciciales(int);
 int posiciones_jugables(int);
 posiciones calcular_posicion(int);
+int calcular_cordenadaX(posiciones);
+int calcular_cordenadaY(posiciones);
 tablero generar_tablero(jugador*, jugador*);
 peon creacion_peon(jugador*, int);
 bloque creacion_bloque(jugador*, int);
 void imprimir_bloque(bloque);
 void imprimir_tablero(tablero);
 
-
+int verificar_movimiento(tablero, posiciones);
 
 
 #endif
