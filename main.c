@@ -2,10 +2,12 @@
 #include "tablero.c"
 
 int main() {
-    //jugador a = {"Disraely", 0, 1, blanco};
-    //jugador b = {"Disraely", 0, 1, negro};
-    //tablero cont;
-    //cont=generar_tablero(&a, &b);
+    //menu();
+    inicio();
+    //jugador a, b;
+    //creacion_jugadores(&a, &b);
+    //tablero cont = generar_tablero(&a, &b);
     //imprimir_tablero(cont);
+    //int klk = juego(&a, &b, &cont);
     return 0;
 }

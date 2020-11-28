@@ -69,10 +69,18 @@ typedef struct {
 // JUGADOR
 jugador creacion_jugador(int x);
 void creacion_jugadores(jugador*, jugador*);
-void actualizacion_jugador(jugador *jugador);
-void actualizacion_jugadores(jugador*, jugador*);
-void estadisticas(jugador, jugador);
+void actualizacion_jugador(jugador *jugador, int);
+void actualizacion_jugadores(jugador*, jugador*, int);
+void estadisticas(jugador*, jugador*);
+void inicio();
+void menu(jugador*, jugador*);
+int juego(jugador*, jugador*, tablero*);
+void imprimir_color(color);
 
+//MANEJO DE ERRORES
+int verificar_char_to_int (char frase[]);
+int captura_int(int limiteA, int limiteB);
+int char_to_int (char[]);
 
 // TABLERO Y PIEZAS
 int posiciones_inciciales(int);
@@ -86,7 +94,7 @@ bloque creacion_bloque(jugador*, int);
 void imprimir_bloque(bloque);
 void imprimir_tablero(tablero);
 
-int verificar_movimiento(tablero, posiciones);
+int verificar_movimiento(tablero, posiciones, posiciones);
 
 
 #endif
