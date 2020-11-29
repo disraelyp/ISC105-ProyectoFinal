@@ -9,7 +9,6 @@ int verificar_char_to_int (char frase[]) {
     }
     return 1;
 }
-
 int captura_int(int limiteA, int limiteB) {
     int contB;
 
@@ -44,7 +43,6 @@ int captura_int(int limiteA, int limiteB) {
     }
     return contB;
 }
-
 int char_to_int (char frase[]) {
     int contA=0, contB, contC;
     for ( contB = 0; frase[contB] != '\0'; contB++ ){
@@ -54,4 +52,10 @@ int char_to_int (char frase[]) {
         }
     }
     return contA;
+}
+int verificar_frase(char *frase){
+    if (strlen(frase)==6 && *(frase)=='p' && *(frase+1)>=97 && *(frase+1)<=104 && *(frase+2)>=49 && *(frase+2)<=56 && *(frase+3)==' '&& *(frase+4)>=97 && *(frase+4)<=104 && *(frase+5)>=49 && *(frase+5)<=56){
+        return 1;
+    }
+    return 0;
 }

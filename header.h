@@ -81,20 +81,30 @@ void imprimir_color(color);
 int verificar_char_to_int (char frase[]);
 int captura_int(int limiteA, int limiteB);
 int char_to_int (char[]);
+int verificar_frase(char*);
 
 // TABLERO Y PIEZAS
 int posiciones_inciciales(int);
-int posiciones_jugables(int);
+int cordenadas_jugables(int);
+int posiciones_jugables(posiciones);
 posiciones calcular_posicion(int);
+
 int calcular_cordenadaX(posiciones);
 int calcular_cordenadaY(posiciones);
+int calcular_cordenada(posiciones);
+
 tablero generar_tablero(jugador*, jugador*);
 peon creacion_peon(jugador*, int);
 bloque creacion_bloque(jugador*, int);
 void imprimir_bloque(bloque);
 void imprimir_tablero(tablero);
 
+
+// JUEGO
+
 int verificar_movimiento(tablero, posiciones, posiciones);
+int verificar_posiciones(tablero*, jugador*, char*);
+int verificar_propietario(tablero, jugador*, posiciones);
 
 
 #endif

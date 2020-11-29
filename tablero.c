@@ -10,8 +10,7 @@ int posiciones_inciciales(int posicion){
     }
     return 0;
 }
-
-int posiciones_jugables(int posicion){
+int cordenadas_jugables(int posicion){
     posiciones contenedor = calcular_posicion(posicion);
     posiciones lista[32]={b8, d8, f8, h8, b6, d6, f6, h6, b4, d4, f4, h4, b2, d2, f2, h2, a7, c7, e7, g7, a5, c5, e5, g5, a3, c3, e3, g3, a1, c1, e1, g1};
     for(int i=0; i<32; i++){
@@ -20,11 +19,34 @@ int posiciones_jugables(int posicion){
         }
     }
     return 0;
+} // POSICIONES JUGABLES: INT
+int posiciones_jugables(posiciones posicion){
+    posiciones lista[32]={b8, d8, f8, h8, b6, d6, f6, h6, b4, d4, f4, h4, b2, d2, f2, h2, a7, c7, e7, g7, a5, c5, e5, g5, a3, c3, e3, g3, a1, c1, e1, g1};
+    for(int i=0; i<32; i++){
+        if (posicion==lista[i]){
+            return 1;
+        }
+    }
+    return 0;
 }
-
+posiciones posiciones_char(char *posicion) {
+    posiciones lista_enum[64] = {a8, b8, c8, d8, e8, f8, g8, h8, a7, b7, c7, d7, e7, f7, g7, h7, a6, b6, c6, d6, e6, f6, g6, h6, a5, b5, c5, d5, e5, f5, g5, h5, a4, b4, c4, d4, e4, f4, g4, h4, a3, b3, c3, d3, e3, f3, g3, h3, a2, b2, c2, d2, e2, f2, g2, h2, a1, b1, c1, d1, e1, f1, g1, h1};
+    char lista_char[][64] = {"a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8", "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7", "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6", "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5", "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4", "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3", "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2", "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"};
+    int i;
+    for (i = 0; strcmp(lista_char[i], posicion); i++);
+    return lista_enum[i];
+}
 posiciones calcular_posicion(int posicion){
     posiciones lista[64]={a8, b8, c8, d8, e8, f8, g8, h8, a7, b7, c7, d7, e7, f7, g7, h7, a6, b6, c6, d6, e6, f6, g6, h6, a5, b5, c5, d5, e5, f5, g5, h5, a4, b4, c4, d4, e4, f4, g4, h4, a3, b3, c3, d3, e3, f3, g3, h3, a2, b2, c2, d2, e2, f2, g2, h2, a1, b1, c1, d1, e1, f1, g1, h1};
     return lista[posicion-1];
+}
+int calcular_cordenada(posiciones posicion){
+    posiciones lista[64]={a8, b8, c8, d8, e8, f8, g8, h8, a7, b7, c7, d7, e7, f7, g7, h7, a6, b6, c6, d6, e6, f6, g6, h6, a5, b5, c5, d5, e5, f5, g5, h5, a4, b4, c4, d4, e4, f4, g4, h4, a3, b3, c3, d3, e3, f3, g3, h3, a2, b2, c2, d2, e2, f2, g2, h2, a1, b1, c1, d1, e1, f1, g1, h1};
+    for(int i; i<64; i++){
+        if(lista[i]==posicion){
+            return i+1;
+        }
+    }
 }
 
 int calcular_cordenadaX(posiciones posicion){
@@ -38,7 +60,6 @@ int calcular_cordenadaX(posiciones posicion){
         }
     }
 }
-
 int calcular_cordenadaY(posiciones posicion){
     posiciones lista[64]={a8, b8, c8, d8, e8, f8, g8, h8, a7, b7, c7, d7, e7, f7, g7, h7, a6, b6, c6, d6, e6, f6, g6, h6, a5, b5, c5, d5, e5, f5, g5, h5, a4, b4, c4, d4, e4, f4, g4, h4, a3, b3, c3, d3, e3, f3, g3, h3, a2, b2, c2, d2, e2, f2, g2, h2, a1, b1, c1, d1, e1, f1, g1, h1};
     for(int i=0; i<64; i++){
@@ -52,7 +73,6 @@ int calcular_cordenadaY(posiciones posicion){
         }
     }
 }
-
 tablero generar_tablero(jugador *a, jugador *b) {
     bloque ejemplo=creacion_bloque(NULL, 1);
     bloque **bloques = (bloque **) malloc(8 * sizeof(ejemplo));
@@ -85,7 +105,6 @@ tablero generar_tablero(jugador *a, jugador *b) {
     tablero contenedor={a, 12, b, 12, curso, bloques};
     return contenedor;
 }
-
 peon creacion_peon(jugador *contA, int contC){
     peon contenedor;
     contenedor.propietario=contA;
@@ -93,10 +112,9 @@ peon creacion_peon(jugador *contA, int contC){
     contenedor.estado=basica;
     return contenedor;
 }
-
 bloque creacion_bloque(jugador *jugador, int contB){
     bloque contenedor;
-    if (posiciones_jugables(contB)){
+    if (cordenadas_jugables(contB)){
         if(jugador==NULL){
             contenedor.estado=disponible;
         } else {
@@ -110,7 +128,6 @@ bloque creacion_bloque(jugador *jugador, int contB){
     }
     return contenedor;
 }
-
 void imprimir_bloque(bloque cont){
     if(cont.estado==casilla_blanca){
         printf("  .");
@@ -127,7 +144,6 @@ void imprimir_bloque(bloque cont){
     }
 
 }
-
 void imprimir_tablero(tablero cont){
     bloque **contenedor=cont.plano;
     printf("\n\t   ");
@@ -147,60 +163,4 @@ void imprimir_tablero(tablero cont){
     for(int h=0; h<COLUMNA; ++h){
         printf("  %c", h+65);
     }
-}
-
-int verificar_movimiento(tablero cont, posiciones inicial, posiciones final){
-    bloque **contenedor=cont.plano;
-    int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial);
-    int xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
-
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blanco && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-        if ((yInicial+1)==yFinal && (xInicial-1)==xFinal && (*(*(contenedor+(yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
-            return 1;
-        }
-        if ((yInicial+1)==yFinal && (xInicial+1)==xFinal && (*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
-            return 1;
-        }
-    }
-
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negro && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-        if ((yInicial-1)==yFinal && (xInicial-1)==xFinal && (*(*(contenedor+(yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
-            return 1;
-        }
-        if ((yInicial-1)==yFinal && (xInicial+1)==xFinal && (*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
-            return 1;
-        }
-    }
-    return 0;
-}
-
-
-int verificar_ahogado(tablero cont, posiciones inicial, posiciones final){
-    bloque **contenedor=cont.plano;
-    int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial);
-    int xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
-
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blanco && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-        if ((*(*(contenedor+(yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
-            if ((*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
-                return 2;
-            }
-            return 1;
-        }
-        if ((*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
-            return 1;
-        }
-    }
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negro && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-        if ((*(*(contenedor+(yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
-            if ((*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
-                return 2;
-            }
-            return 1;
-        }
-        if ((*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
-            return 1;
-        }
-    }
-    return 0;
 }

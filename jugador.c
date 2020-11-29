@@ -1,5 +1,4 @@
 #include "header.h"
-#include "manejo_errores.c"
 
 jugador creacion_jugador(int x){
     jugador cont;
