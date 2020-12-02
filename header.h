@@ -37,6 +37,7 @@ typedef enum {
     bloqueado,
     casilla_blanca
 } estado_bloque;
+
 typedef struct {
     char nombre[50];
     int partidas_ganadas;
@@ -65,46 +66,48 @@ typedef struct {
     bloque **plano; // MATRIS 8*8 DE TODAS LAS FICHAS
 } tablero;
 
+typedef struct {
+    jugador *a;
+    jugador *b;
+    int numJugada;
+    posiciones inicial;
+    posiciones final;
+    int estado_juego;
+} notacion_algebraica;
 
-// JUGADOR
-jugador creacion_jugador(int x);
-void creacion_jugadores(jugador*, jugador*);
-void actualizacion_jugador(jugador *jugador, int);
-void actualizacion_jugadores(jugador*, jugador*, int);
-void estadisticas(jugador*, jugador*);
-void inicio();
-void menu(jugador*, jugador*);
-int juego(jugador*, jugador*, tablero*);
-void imprimir_color(color);
 
-//MANEJO DE ERRORES
-int verificar_char_to_int (char frase[]);
-int captura_int(int limiteA, int limiteB);
-int char_to_int (char[]);
-int verificar_frase(char*);
+// TABLERO
 
-// TABLERO Y PIEZAS
-int posiciones_inciciales(int);
-int cordenadas_jugables(int);
 int posiciones_jugables(posiciones);
 posiciones calcular_posicion(int);
-
+int cordenadas_iniciales(int);
+int cordenadas_jugables(int);
+int calcular_cordenada(posiciones);
 int calcular_cordenadaX(posiciones);
 int calcular_cordenadaY(posiciones);
-int calcular_cordenada(posiciones);
-
 tablero generar_tablero(jugador*, jugador*);
-peon creacion_peon(jugador*, int);
-bloque creacion_bloque(jugador*, int);
+peon creacion_peon(jugador*, int, int);
+bloque creacion_bloque(jugador*, int, int);
 void imprimir_bloque(bloque);
 void imprimir_tablero(tablero);
 
 
 // JUEGO
-
+int cambio_posicion(tablero*, jugador*, posiciones, posiciones);
 int verificar_movimiento(tablero, posiciones, posiciones);
-int verificar_posiciones(tablero*, jugador*, char*);
-int verificar_propietario(tablero, jugador*, posiciones);
+int verificar_posiciones(tablero*, jugador*, char *movimiento);
+int verificar_propietario(tablero cont, jugador*, posiciones);
 
+
+// JUGADOR
+jugador creacion_jugador(int);  //  CREA UNA ESTRUCTURA TIPO JUGADOR
+void creacion_jugadores (jugador*, jugador*);  //  CREA DOS ESTRUCTURAS TIPO JUGADOR CON DISTINTA REPRESENTACION
+void imprimir_color(color); // IMPRIME EL COLOR
+void nueva_partida();
+int verificar_char_to_int (char*);
+int captura_int(int, int);
+int char_to_int (char*);
+int verificar_frase(char*);
+posiciones posiciones_char(char*);
 
 #endif
