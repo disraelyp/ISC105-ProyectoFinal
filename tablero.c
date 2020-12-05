@@ -14,9 +14,8 @@ posiciones calcular_posicion(int posicion){
     posiciones lista[64]={a8, b8, c8, d8, e8, f8, g8, h8, a7, b7, c7, d7, e7, f7, g7, h7, a6, b6, c6, d6, e6, f6, g6, h6, a5, b5, c5, d5, e5, f5, g5, h5, a4, b4, c4, d4, e4, f4, g4, h4, a3, b3, c3, d3, e3, f3, g3, h3, a2, b2, c2, d2, e2, f2, g2, h2, a1, b1, c1, d1, e1, f1, g1, h1};
     return lista[posicion-1];
 }
-
 int cordenadas_externas(posiciones posicion){
-    posiciones *lista[16] ={a8, b8, c8, d8, e8, f8, g8, h8, a1, b1, c1, d1, e1, f1, g1, h1};
+    posiciones lista[16] ={a8, b8, c8, d8, e8, f8, g8, h8, a1, b1, c1, d1, e1, f1, g1, h1};
     for (int i=0; i<16; i++){
         if(posicion==(*(lista+i))){
             return 1;
@@ -24,12 +23,11 @@ int cordenadas_externas(posiciones posicion){
     }
     return 0;
 }
-
 int cordenadas_iniciales(int posicion){
     posiciones contenedor = calcular_posicion(posicion);
-    posiciones lista[24]={a7, c7, e7, g7, a3, c3, e3, g3, a1, c1, e1, g1, b8, d8, f8, h8, b6, d6, f6, h6, b2, d2, f2, h2};
+    posiciones *lista[24]={a7, c7, e7, g7, a3, c3, e3, g3, a1, c1, e1, g1, b8, d8, f8, h8, b6, d6, f6, h6, b2, d2, f2, h2};
     for(int i=0; i<24; i++){
-        if (contenedor==lista[i]){
+        if (contenedor==*(lista+i)){
             return 1;
         }
     }
@@ -77,29 +75,32 @@ int calcular_cordenadaY(posiciones posicion){
         }
     }
 }
-
-tablero generar_tablero(jugador *a, jugador *b) {
-    bloque ejemplo=creacion_bloque(NULL, 1, 1);
-    bloque **bloques = (bloque **) malloc(8 * sizeof(ejemplo));
+tablero generar_tablero(jugador *jugadorA, jugador *jugadorB) {
+    bloque **bloques = (bloque **) malloc(8 * sizeof(bloque));
     for (int i = 0; i<FILA; ++i) {
-        *(bloques+i) = (bloque *) malloc(8* sizeof(ejemplo));
+        *(bloques+i) = (bloque *) malloc(8* sizeof(bloque));
     }
-    int posicion=1;
+    int posicion=1, contador=0;
     for (int i = 0; i < COLUMNA; i++) {
         for (int j = 0; j < FILA; j++) {
             if (cordenadas_iniciales(posicion) && posicion < (FILA * COLUMNA) / 2){
-                *(*(bloques+i)+j)= creacion_bloque(NULL, posicion, 1);
-                if(b->representacion==blanco){
-                    *(*(bloques+i)+j)= creacion_bloque(b, posicion, 1);
-                } else {
-                    *(*(bloques+i)+j)= creacion_bloque(a, posicion, 1);
+                contador++;
+                if(contador==11){
+                    if(jugadorB->representacion == blancas){
+                        *(*(bloques+i)+j)= creacion_bloque(jugadorB, posicion, 1);
+                    } else {
+                        *(*(bloques+i)+j)= creacion_bloque(jugadorA, posicion, 1);
+                    }
+                } else{
+                    *(*(bloques+i)+j)= creacion_bloque(NULL, posicion, 1);
                 }
+
             } else {
                 if (cordenadas_iniciales(posicion) && posicion > (FILA * COLUMNA) / 2){
-                    if(b->representacion!=blanco){
-                        *(*(bloques+i)+j)= creacion_bloque(b, posicion, 1);
+                    if(jugadorB->representacion != blancas){
+                        *(*(bloques+i)+j)= creacion_bloque(jugadorB, posicion, 1);
                     } else {
-                        *(*(bloques+i)+j)= creacion_bloque(a, posicion, 1);
+                        *(*(bloques+i)+j)= creacion_bloque(jugadorA, posicion, 1);
                     }
                 } else {
                     *(*(bloques+i)+j)= creacion_bloque(NULL, posicion, 1);
@@ -108,21 +109,21 @@ tablero generar_tablero(jugador *a, jugador *b) {
             posicion++;
         }
     }
-    tablero contenedor={a, 12, b, 12, curso, bloques};
+    tablero contenedor={jugadorA, 12, jugadorB, 12, curso, bloques};
     return contenedor;
 }
-peon creacion_peon(jugador *contA, int contC, int estado){
+peon creacion_peon(jugador *jugadorA, int posicion, int estado){
     peon contenedor;
-    contenedor.propietario=contA;
-    contenedor.posicion=calcular_posicion(contC);
+    contenedor.propietario=jugadorA;
+    contenedor.posicion=calcular_posicion(posicion);
     if (estado){
         contenedor.estado=basica;
     } else{
         contenedor.estado=dama;
     }
-
     return contenedor;
 }
+
 bloque creacion_bloque(jugador *jugador, int contB, int estado){
     bloque contenedor;
     if (cordenadas_jugables(contB)){
@@ -146,7 +147,7 @@ void imprimir_bloque(bloque cont){
         if (cont.estado==disponible){
             printf("  *");
         } else {
-            if(cont.peones.propietario->representacion==blanco){
+            if(cont.peones.propietario->representacion == blancas){
                 if (cont.peones.estado==basica){
                     printf("  b");
                 } else{
@@ -161,12 +162,11 @@ void imprimir_bloque(bloque cont){
             }
         }
     }
-
 }
 void imprimir_tablero(tablero cont){
     bloque **contenedor=cont.plano;
     printf("\n\t   ");
-    for(int h=0; h<COLUMNA; ++h){
+    for(int h=0; h<FILA; ++h){
         printf("  %c", h+65);
     }
     printf("\n\n");
@@ -179,7 +179,7 @@ void imprimir_tablero(tablero cont){
         printf("\n");
     }
     printf("\n\t   ");
-    for(int h=0; h<COLUMNA; ++h){
+    for(int h=0; h<FILA; ++h){
         printf("  %c", h+65);
     }
     printf("\n");

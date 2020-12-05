@@ -18,42 +18,40 @@ int cambio_posicion(tablero *cont, jugador *a, posiciones inicial, posiciones fi
     }
     cont->plano=contenedor;
 }
-int verificar_movimiento(tablero cont, posiciones inicial, posiciones final){
-    bloque **contenedor=cont.plano;
-    int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial);
-    int xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
-    if((*(*(contenedor + yInicial) + xInicial)).estado==bloqueado){
-        if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blanco && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-            if ((yInicial+1)==yFinal && (xInicial-1)==xFinal && (*(*(contenedor+(yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
+int verificar_movimiento(tablero tableroJuego, posiciones inicial, posiciones final){
+    bloque **pPlano=tableroJuego.plano;
+    int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
+    if((*(*(pPlano + yInicial) + xInicial)).estado == bloqueado){
+        if ((((*(*(pPlano + yInicial) + xInicial)).peones.estado==dama) || ((*(*(pPlano + yInicial) + xInicial)).peones.propietario->representacion == blancas)) && (*(*(pPlano + yInicial) + xInicial)).estado != casilla_blanca){
+            if ((yInicial+1)==yFinal && (xInicial-1)==xFinal && (*(*(pPlano + (yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
                 return 1;
             }
-            if ((yInicial+1)==yFinal && (xInicial+1)==xFinal && (*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
-                return 1;
-            }
-        }
-        if((*(*(contenedor + yInicial) + xInicial)).peones.estado=dama && (*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blanco && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-            if ((yInicial-1)==yFinal && (xInicial-1)==xFinal && (*(*(contenedor+(yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
-                return 1;
-            }
-            if ((yInicial-1)==yFinal && (xInicial+1)==xFinal && (*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
+            if ((yInicial+1)==yFinal && (xInicial+1)==xFinal && (*(*(pPlano + (yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
                 return 1;
             }
         }
-
-        if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negro && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-            if ((yInicial-1)==yFinal && (xInicial-1)==xFinal && (*(*(contenedor+(yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
+        if((((*(*(pPlano + yInicial) + xInicial)).peones.estado==dama) || ((*(*(pPlano + yInicial) + xInicial)).peones.propietario->representacion == blancas)) && (*(*(pPlano + yInicial) + xInicial)).estado != casilla_blanca){
+            if ((yInicial-1)==yFinal && (xInicial-1)==xFinal && (*(*(pPlano + (yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
                 return 1;
             }
-            if ((yInicial-1)==yFinal && (xInicial+1)==xFinal && (*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
+            if ((yInicial-1)==yFinal && (xInicial+1)==xFinal && (*(*(pPlano + (yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
+                return 1;
+            }
+        }
+        if((((*(*(pPlano + yInicial) + xInicial)).peones.estado==dama) || ((*(*(pPlano + yInicial) + xInicial)).peones.propietario->representacion == negras)) && (*(*(pPlano + yInicial) + xInicial)).estado != casilla_blanca){
+            if ((yInicial-1)==yFinal && (xInicial-1)==xFinal && (*(*(pPlano + (yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
+                return 1;
+            }
+            if ((yInicial-1)==yFinal && (xInicial+1)==xFinal && (*(*(pPlano + (yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
                 return 1;
             }
         }
 
-        if((*(*(contenedor + yInicial) + xInicial)).peones.estado=dama && (*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negro && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-            if ((yInicial+1)==yFinal && (xInicial-1)==xFinal && (*(*(contenedor+(yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
+        if((((*(*(pPlano + yInicial) + xInicial)).peones.estado==dama) || ((*(*(pPlano + yInicial) + xInicial)).peones.propietario->representacion == negras)) && (*(*(pPlano + yInicial) + xInicial)).estado != casilla_blanca){
+            if ((yInicial+1)==yFinal && (xInicial-1)==xFinal && (*(*(pPlano + (yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
                 return 1;
             }
-            if ((yInicial+1)==yFinal && (xInicial+1)==xFinal && (*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
+            if ((yInicial+1)==yFinal && (xInicial+1)==xFinal && (*(*(pPlano + (yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
                 return 1;
             }
         }
@@ -84,22 +82,18 @@ int verificar_posiciones(tablero *cont, jugador *a, char *movimiento){
     }
     return 0;
 }
-int verificar_propietario(tablero cont, jugador *a, posiciones posicion){
-    bloque **contenedor=cont.plano;
-    int x=calcular_cordenadaX(posicion), y=calcular_cordenadaY(posicion);
-    if((*(*(contenedor+y)+x)).peones.propietario==a){
+int verificar_propietario(tablero tableroJuego, jugador *pJugador, posiciones ubicacion){
+    bloque **pPlano=tableroJuego.plano;
+    int x=calcular_cordenadaX(ubicacion), y=calcular_cordenadaY(ubicacion);
+    if((*(*(pPlano + y) + x)).peones.propietario == pJugador){
         return 1;
     }
     return 0;
 }
-
-
-
-
-int verificar_ahogado(tablero cont, posiciones inicial){
-    bloque **contenedor=cont.plano;
+int verificar_ahogado(tablero tableroJuego, posiciones inicial){
+    bloque **contenedor=tableroJuego.plano;
     int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial);
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blanco && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
+    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blancas && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
         if ((*(*(contenedor+(yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
             if ((*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
                 return 2;
@@ -110,7 +104,7 @@ int verificar_ahogado(tablero cont, posiciones inicial){
             return 1;
         }
     }
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negro && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
+    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negras && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
         if ((*(*(contenedor+(yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
             if ((*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
                 return 2;
@@ -122,4 +116,16 @@ int verificar_ahogado(tablero cont, posiciones inicial){
         }
     }
     return 0;
+}
+int contar_fichas(tablero cont, jugador *a){
+    bloque **contenedor=cont.plano;
+    int contador=0;
+    for (int i = 0; i < COLUMNA; ++i) {
+        for (int j = 0; j < FILA; ++j) {
+            if((*(*(contenedor + i) + j)).peones.propietario == a){
+                contador++;
+            }
+        }
+    }
+    return contador;
 }

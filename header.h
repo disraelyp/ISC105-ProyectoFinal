@@ -10,8 +10,8 @@ int const FILA = 8;
 int const TOTAL_FICHAS = 12;
 
 typedef enum {
-    blanco,
-    negro
+    blancas,
+    negras
 } color;
 typedef enum {
     a8, b8, c8, d8, e8, f8, g8, h8,
@@ -40,8 +40,6 @@ typedef enum {
 
 typedef struct {
     char nombre[50];
-    int partidas_ganadas;
-    int partidas_total;
     color representacion;
 } jugador;
 typedef struct{
@@ -76,6 +74,8 @@ typedef struct {
 } notacion_algebraica;
 
 
+
+
 // TABLERO
 
 int posiciones_jugables(posiciones);
@@ -96,7 +96,8 @@ void imprimir_tablero(tablero);
 int cambio_posicion(tablero*, jugador*, posiciones, posiciones);
 int verificar_movimiento(tablero, posiciones, posiciones);
 int verificar_posiciones(tablero*, jugador*, char *movimiento);
-int verificar_propietario(tablero cont, jugador*, posiciones);
+int verificar_propietario(tablero tableroJuego, jugador*, posiciones);
+int contar_fichas(tablero, jugador*);
 
 
 // JUGADOR

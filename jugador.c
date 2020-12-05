@@ -1,33 +1,38 @@
 #include "header.h"
 
-jugador creacion_jugador(int x){
-    jugador cont;
+jugador creacion_jugador(int representacion){
+    jugador contenedor;
     printf("\n");
-    if(x==1){
-        cont.representacion=blanco;
+    if(representacion == 1){
+        contenedor.representacion=blancas;
     } else {
-        cont.representacion=negro;
+        contenedor.representacion=negras;
     }
-    printf("Indique el nombre del jugador de las "); imprimir_color(cont.representacion); printf("\t->"); gets(cont.nombre);
-    cont.partidas_ganadas=0;
-    cont.partidas_total=0;
-    return cont;
+    printf("Indique el nombre del jugador de las "); imprimir_color(contenedor.representacion); printf("\t->"); gets(contenedor.nombre);
+    return contenedor;
 }
-void creacion_jugadores (jugador *a, jugador *b){
-    (*a)=creacion_jugador(0);
-    (*b)=creacion_jugador(1);
+void creacion_jugadores (jugador *pJugadorA, jugador *pJugadorB){
+    (*pJugadorA)=creacion_jugador(0);
+    (*pJugadorB)=creacion_jugador(1);
 }
-void imprimir_color(color cont){
-    if (cont==blanco){
+void imprimir_color(color representacion){
+    if (representacion == blancas){
         printf("BLANCAS");
     } else {
         printf("NEGRAS");
     };
 }
+int turno(jugador *pJugador){
+    printf("");
+}
 void nueva_partida(){
     jugador a, b;
     creacion_jugadores(&a, &b);
     tablero cont=generar_tablero(&a, &b);
+    int op;
+    do {
+
+    } while (1==1);
 
 }
 int verificar_char_to_int (char *frase) {
