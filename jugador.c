@@ -115,7 +115,7 @@ int verificar_propietario(const tablero tableroJuego, const jugador *pJugador, c
     return 0;
 }
 
-int turno(tablero *cont, jugador *a, jugador *b, const int contador){
+int turno(tablero *cont, jugador *a, jugador *b, const int contador, char *nombre_archivo, const int id){
     int op;
     do{
         imprimir_tablero(*(cont));
@@ -123,8 +123,8 @@ int turno(tablero *cont, jugador *a, jugador *b, const int contador){
         op=captura_int(1, 3);
         switch (op) {
             case 1:
-                turno_movimiento(cont, a, b);
-                if(contar_fichas(*(cont), b)){
+                turno_movimiento(cont, a, b, nombre_archivo, id);
+                if(!contar_fichas(*(cont), b)){
                     return 4;
                 }
                 return 1;
@@ -138,23 +138,24 @@ int turno(tablero *cont, jugador *a, jugador *b, const int contador){
         }
     } while (op!=5);
 }
-void turno_movimiento(tablero *cont, jugador *a, jugador *b){
+void turno_movimiento(tablero *cont, jugador *a, jugador *b, char *nombre_archivo, const int id){
     char movimiento[]="pa1 a1";
     do{
         printf("\n\tIndique Jugada *");
         imprimir_color(a->representacion);
         printf("* ->");
         gets(movimiento);
-    }while (!verificar_movimiento(cont, a, b, movimiento));
+    }while (!verificar_movimiento(cont, a, b, movimiento, nombre_archivo, id));
 }
 
-void nueva_partida(){
+void nueva_partida(char *nombre_archivo){
+    int id=nuevo_id(nombre_archivo);
     jugador contA, contB;
     creacion_jugadores(&contA, &contB);
     tablero contC=generar_tablero(&contA, &contB);
     int contador=1;
     do{
-        switch (turno(&contC, &contA, &contB, contador)) {
+        switch (turno(&contC, &contA, &contB, contador, nombre_archivo, id)) {
             case 1:
                 break;
             case 4:
@@ -167,7 +168,7 @@ void nueva_partida(){
                 printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE LOS JUGADORES HAN ACORDADO UN EMPATE\n\n", contA.nombre);
                 return;
         }
-        switch (turno(&contC, &contB, &contA, contador)) {
+        switch (turno(&contC, &contB, &contA, contador, nombre_archivo, id)) {
             case 1:
                 break;
             case 4:

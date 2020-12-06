@@ -73,6 +73,24 @@ typedef struct {
 } notacion_algebraica;
 
 
+
+int nuevo_id(char*);
+void leer_archivo(char*, int id);
+void escribir_archivo(char*, int, jugador*, jugador*, posiciones, posiciones, estado_bloque);
+int cantidad_notaciones(char*);
+FILE* abrir_archiv(char*, char *);
+void cerrar_archiv(FILE*);
+int verificar_archivo(char *nombre_archivo);
+void lista_notaciones(char *);
+
+
+
+
+
+
+
+
+
 // FUNCIONES - JUGADOR.C
 jugador captura_jugador(const int);
 void creacion_jugadores (jugador*, jugador*);
@@ -82,8 +100,8 @@ int char_int (const char*);
 int verifica_entrada(const char*);
 int contar_fichas(const tablero, const jugador*);
 int verificar_propietario(const tablero, const jugador*, const posiciones);
-void turno_movimiento(tablero *, jugador *, jugador*);
-int turno(tablero*, jugador*, jugador*, const int);
+void turno_movimiento(tablero *, jugador *, jugador*, char*, const int);
+int turno(tablero*, jugador*, jugador*, const int, char*, const int);
 
 // FUNCIONES - TABLERO.C
 posiciones extraer_posiciones(const char*);
@@ -107,10 +125,10 @@ void imprimir_posiciones(const posiciones);
 tablero generar_tablero(const jugador*, const jugador*);
 peon creacion_peon(const jugador*, const int, const int);
 bloque creacion_bloque(const jugador*, const int, const int);
-void cambio_posicion(tablero*, const jugador*, const posiciones, const posiciones);
-void eliminar_posicion(tablero*, const jugador*, const posiciones, const posiciones);
+void cambio_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int);
+void eliminar_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int);
 int verificar_posiciones(const tablero, const posiciones, const posiciones);
-int verificar_movimiento(tablero*, jugador*, jugador*, const char*);
+int verificar_movimiento(tablero*, jugador*, jugador*, const char*, const char*, int const id);
 void reajustar_tablero(tablero*);
 int recorrer_tablero(const tablero, const jugador*, const jugador*);
 int verificar_eliminar(const bloque**, const jugador*, const posiciones);

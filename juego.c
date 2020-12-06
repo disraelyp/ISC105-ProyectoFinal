@@ -58,7 +58,8 @@ bloque creacion_bloque(const jugador *jugador, const int contB, const int estado
     }
     return contenedor;
 }
-void cambio_posicion(tablero *cont, const jugador *a, const posiciones inicial, const posiciones final){
+
+void cambio_posicion(tablero *cont, const jugador *a, const jugador *b, const posiciones inicial, const posiciones final, const char *nombre_archivo, int const id){
     bloque **contenedor=cont->plano;
     int const xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
     estado_peon estadoPeon;
@@ -74,9 +75,10 @@ void cambio_posicion(tablero *cont, const jugador *a, const posiciones inicial, 
     } else{
         (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 1);
     }
+    escribir_archivo(nombre_archivo, id, a, b, inicial, final, curso);
     cont->plano=contenedor;
 }
-void eliminar_posicion(tablero *cont, const jugador *a, const posiciones inicial, const posiciones final){
+void eliminar_posicion(tablero *cont, const jugador *a, const jugador *b, const posiciones inicial, const posiciones final, const char *nombre_archivo, int const id){
     bloque **contenedor=cont->plano;
     const int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
     const posiciones intermedia =  posicion_intermedia(inicial, final);
@@ -96,10 +98,11 @@ void eliminar_posicion(tablero *cont, const jugador *a, const posiciones inicial
     } else{
         (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 1);
     }
-
+    escribir_archivo(nombre_archivo, id, a, b, inicial, final, curso);
     cont->plano=contenedor;
     reajustar_tablero(cont);
 }
+
 int verificar_posiciones(const tablero tableroJuego, const posiciones inicial, const posiciones final){
     bloque **pPlano=tableroJuego.plano;
     int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
@@ -140,7 +143,8 @@ int verificar_posiciones(const tablero tableroJuego, const posiciones inicial, c
     }
     return 0;
 }
-int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movimiento){
+
+int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movimiento, const char *nombre_archivo, const int id){
     if (verifica_entrada(movimiento)){
         char posicion_inicial[3]={*(movimiento+1), *(movimiento+2), '\0'}, posicion_final[3]={*(movimiento+4), *(movimiento+5), '\0'};
         posiciones inicial = extraer_posiciones(posicion_inicial), final = extraer_posiciones(posicion_final);
@@ -149,9 +153,9 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
                 if(posiciones_diagonales(inicial, final)){
                     if(parametros_eliminar(*(cont), inicial, final)){
                         if(verificar_propietario(*(cont), a, inicial)){
-                            eliminar_posicion(cont, a, inicial, final);
+                            eliminar_posicion(cont, a, b, inicial, final, nombre_archivo, id);
                             reajustar_tablero(cont);
-                            printf("\n%d - %d\n", cont->total_fichasA, cont->total_fichasB);
+                            printf("\n%d / %d\n", cont->total_fichasA, cont->total_fichasB);
                             if(!recorrer_tablero(*(cont), a, b)){
                                 return 1;
                             }
@@ -171,9 +175,8 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
             } else {
                 if(verificar_posiciones(*(cont), inicial, final)){
                     if(verificar_propietario(*(cont), a, inicial)){
-                        cambio_posicion(cont, a, inicial, final);
+                        cambio_posicion(cont, a, b, inicial, final, nombre_archivo, id);
                         reajustar_tablero(cont);
-                        printf("\n%d - %d\n", cont->total_fichasA, cont->total_fichasB);
                         return 1;
                     } else{
                         printf("\n\tERORR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
@@ -191,6 +194,8 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
     }
     return 0;
 }
+
+
 void reajustar_tablero(tablero *cont){
     bloque **contenedor=cont->plano;
     int contador=0;
