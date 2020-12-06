@@ -27,15 +27,14 @@ typedef enum {
     dama,
 }estado_peon;
 typedef enum {
-    curso,
-    finalizado,
-    interrumpido
-} estado_juego;
-typedef enum {
     disponible,
     bloqueado,
     casilla_blanca
 } estado_bloque;
+typedef enum {
+    curso,
+    finalizado
+} estado_juego;
 
 typedef struct {
     char nombre[50];
@@ -58,18 +57,19 @@ typedef struct {
     jugador *jugadorB; //
     int total_fichasB;
 
-    estado_juego estado;
-
     bloque **plano; // MATRIS 8*8 DE TODAS LAS FICHAS
 } tablero;
 
+
+
 typedef struct {
-    jugador *a;
+    int id_juego; // NUMERO DE PARTIDA
+    jugador *a; //PRINCIPAL
     jugador *b;
-    int numJugada;
     posiciones inicial;
     posiciones final;
-    int estado_juego;
+    estado_juego contenedor;
+
 } notacion_algebraica;
 
 
@@ -82,6 +82,8 @@ int char_int (const char*);
 int verifica_entrada(const char*);
 int contar_fichas(const tablero, const jugador*);
 int verificar_propietario(const tablero, const jugador*, const posiciones);
+void turno_movimiento(tablero *, jugador *, jugador*);
+int turno(tablero*, jugador*, jugador*, const int);
 
 // FUNCIONES - TABLERO.C
 posiciones extraer_posiciones(const char*);
@@ -98,6 +100,8 @@ int calcular_cordenadaY(const posiciones);
 void imprimir_bloque(const bloque);
 void imprimir_tablero(const tablero);
 void imprimir_color(const color);
+void imprimir_representacion(const color);
+void imprimir_posiciones(const posiciones);
 
 //FUNCIONES - JUEGO.C
 tablero generar_tablero(const jugador*, const jugador*);

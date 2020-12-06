@@ -3,20 +3,10 @@
 #include "jugador.c"
 
 
-void turno_movimiento(tablero *cont, jugador *a, jugador *b){
-    char movimiento[]="pa1 a1";
-    do{
-        printf("\n\tIndique Jugada *");
-        imprimir_color(a->representacion);
-        printf("* ->");
-        gets(movimiento);
-    }while (!verificar_movimiento(cont, a, b, movimiento));
-    imprimir_tablero(*(cont));
-}
+
 
 
 int main() {
-    /**
     int op=0;
     do {
         printf("\n\tJuego de Damas en Lenguaje C -> Menu de opciones.\n\n");
@@ -38,24 +28,6 @@ int main() {
                 break;
         }
     } while (op!=4);
-    **/
-
-    jugador a={"disraely", blancas};
-    jugador b={"hola", negras};
-    tablero cont = generar_tablero(&a, &b);
-    char movimiento[]="pg3 h4";
-    imprimir_tablero(cont);
-    int i=0;
-    do{
-        do {
-            turno_movimiento(&cont, &b, &a);
-        } while (recorrer_tablero(cont, &b, &a));
-
-        do {
-            turno_movimiento(&cont, &a, &b);
-        } while (recorrer_tablero(cont, &a, &b));
-
-    } while(i!=12);
 }
 
 

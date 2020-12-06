@@ -28,7 +28,7 @@ tablero generar_tablero(const jugador *jugadorA, const jugador *jugadorB) {
             posicion++;
         }
     }
-    tablero contenedor={jugadorA, 12, jugadorB, 12, curso, bloques};
+    tablero contenedor={jugadorA, 12, jugadorB, 12, bloques};
     return contenedor;
 }
 peon creacion_peon(const jugador *jugadorA, const int posicion, const int estado){
@@ -141,7 +141,6 @@ int verificar_posiciones(const tablero tableroJuego, const posiciones inicial, c
     return 0;
 }
 int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movimiento){
-    reajustar_tablero(cont);
     if (verifica_entrada(movimiento)){
         char posicion_inicial[3]={*(movimiento+1), *(movimiento+2), '\0'}, posicion_final[3]={*(movimiento+4), *(movimiento+5), '\0'};
         posiciones inicial = extraer_posiciones(posicion_inicial), final = extraer_posiciones(posicion_final);
@@ -151,6 +150,8 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
                     if(parametros_eliminar(*(cont), inicial, final)){
                         if(verificar_propietario(*(cont), a, inicial)){
                             eliminar_posicion(cont, a, inicial, final);
+                            reajustar_tablero(cont);
+                            printf("\n%d - %d\n", cont->total_fichasA, cont->total_fichasB);
                             if(!recorrer_tablero(*(cont), a, b)){
                                 return 1;
                             }
@@ -171,6 +172,8 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
                 if(verificar_posiciones(*(cont), inicial, final)){
                     if(verificar_propietario(*(cont), a, inicial)){
                         cambio_posicion(cont, a, inicial, final);
+                        reajustar_tablero(cont);
+                        printf("\n%d - %d\n", cont->total_fichasA, cont->total_fichasB);
                         return 1;
                     } else{
                         printf("\n\tERORR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
@@ -198,6 +201,8 @@ void reajustar_tablero(tablero *cont){
         }
     }
     cont->plano=contenedor;
+    cont->total_fichasA=contar_fichas(*(cont), cont->jugadorA);
+    cont->total_fichasB=contar_fichas(*(cont), cont->jugadorB);
 }
 int recorrer_tablero(const tablero cont, const jugador *a, const jugador *b){
     bloque const **contenedor=cont.plano;

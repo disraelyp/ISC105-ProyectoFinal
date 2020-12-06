@@ -1,77 +1,71 @@
-#include <stdio.h>
-#include <stdlib.h>
-/**
- * Proceso para trabajar archivo:
- * 1. Referencia al puntero FILE.
- * 2. Apertura del archivo según el modo de operación, con su validación.
- * 3. Realizar el proceso deseado (Leer, Escribir, crear o borrar).
- * 4. Cerrar el archivo.
- */
-typedef struct {
-    int matricula; //4 bytes del entero
-    char nombre[100]; //100 bytes... total 104.
-} Estudiante;
-//
+#include "header.h"
+
 FILE* abrir_archivo(char *nombre, char *modo);
 void cerrar_archivo(FILE *archivo);
-void escribir_texto_archivo(char *nombre);
-void escribir_caracter_en_texto(char *nombre);
-void leer_texto_archivo(char *nombre);
-void escribir_estudiante_archivo(char *nombre);
-int cantidad_estudiante_archivo(char *nombre);
+void escribir_archivo(char *nombre_archivo, int id, jugador *a, jugador *b, posiciones inicial, posiciones final, estado_bloque estado);
+void leer_archivo(char*, int);
+int cantidad_notaciones(char*);
 
-
-void escribir_estudiante_archivo(char *nombre){
-    FILE *archivo = abrir_archivo(nombre, "a+b"); //crear archivo tipo binario y mueve al final
-    //completando desde una funcion para obtener el estudiante..
-    Estudiante tmp = {20011136, "Carlos Camacho"};
-    //guardar la estructurua en un archivo....
-    fwrite(&tmp, sizeof(Estudiante), 1, archivo);
-    //cerrando el archivo....
-    cerrar_archivo(archivo);
-}
-void leer_texto_archivo(char *nombre){
-    FILE *archivo = abrir_archivo(nombre, "r");
-    printf("======= Información del archivo =========\n");
-    char caracter;
-    while ((caracter = fgetc(archivo)) != EOF){
-        fputc(caracter, stdout);
+int nuevo_id(char *nombre_archivo){
+    int cantidad_estudiante = cantidad_notaciones(nombre_archivo);
+    int cantidad_leida = 0;
+    FILE *archivo = abrir_archivo(nombre_archivo, "rb");
+    while (cantidad_leida<cantidad_estudiante){
+        notacion_algebraica tmp;
+        fread(&tmp, sizeof(notacion_algebraica), 1, archivo);
+        if(cantidad_leida<cantidad_estudiante){
+            cerrar_archivo(archivo);
+            if(tmp.contenedor==finalizado){
+                return tmp.id_juego+1;
+            }
+        }
+        cantidad_leida++;
     }
-    printf("======= Fin Información del archivo =========\n");
+}
+void leer_archivo(char *nombre_archivo, int id){
+    int cantidad_estudiante = cantidad_notaciones(nombre_archivo);
+    int cantidad_leida = 0;
+    FILE *archivo = abrir_archivo(nombre_archivo, "rb");
+    //
+    while (cantidad_leida<cantidad_estudiante){
+        notacion_algebraica tmp;
+        fread(&tmp, sizeof(notacion_algebraica), 1, archivo);
+        if(tmp.id_juego==id){
+            imprimir_representacion(tmp.a->representacion);
+            imprimir_posiciones(tmp.inicial);
+            printf(" ");
+            imprimir_posiciones(tmp.final);
+            printf("\n");
+            cantidad_leida++;
+        }
+    }
     cerrar_archivo(archivo);
 }
-void escribir_caracter_en_texto(char *nombre) {
-    FILE *archivo = abrir_archivo(nombre, "r+"); //modo: r+ posición de inicio del archivo, a+ al final de archivo.
-    //mover al final sin usar el modo: a+
+void escribir_archivo(char *nombre_archivo, int id, jugador *a, jugador *b, posiciones inicial, posiciones final, estado_bloque estado){
+    FILE *archivo = abrir_archivo(nombre_archivo, "a+b");
+    notacion_algebraica tmp = {id, a, b, inicial, final, estado};
+    fwrite(&tmp, sizeof(notacion_algebraica), 1, archivo);
+    cerrar_archivo(archivo);
+}
+int cantidad_notaciones(char *nombre){
+    FILE *archivo = abrir_archivo(nombre, "rb");
     fseek(archivo, 0L, SEEK_END);
-//Operación archivo.
-    printf("Digite el texto para el archivo:");
-    char caracter;
-    while ((caracter = getc(stdin)) != '\n') {
-        fputc(caracter, archivo);
-    }
-    fputc('\n', archivo);
-//
+    int cantidad_estudiantes = ftell(archivo) / sizeof(notacion_algebraica);
     cerrar_archivo(archivo);
+    return cantidad_estudiantes;
 }
-void escribir_texto_archivo(char *nombre){
-    FILE *archivo = abrir_archivo(nombre, "w");
-//
-    printf("Escribiendo en el archivo.....\n");
-    fputs("Hola Mundo en C desde Archivo :-D", archivo);
-//cierre
-    cerrar_archivo(archivo);
-}
-FILE* abrir_archivo(char *nombre, char *modo){
-    FILE *archivo = fopen(nombre, modo);
+FILE* abrir_archivo(char *nombre_archivo, char *funcion){
+    FILE *archivo = fopen(nombre_archivo, funcion);
     if(archivo == NULL){
-        fputs("Archivo no abierto, verificar...", stderr);
+        printf("\n\n\tERROR CRITICO: EL ARCHIVO NO FUE ABIERTO O ENCONTRADO CORRECTAMENTE\n");
         exit(-1);
     }
-    printf("Archivo abierto\n");
     return archivo;
 }
-void cerrar_archivo(FILE *archivo){
-    int cerrado = fclose(archivo);
-    cerrado == 0 ? printf("Archivo Cerrado\n") : printf("Error Archivo No Cerrado\n");
+void cerrar_archivo(FILE *nombre_archivo){
+    int archivo = fclose(nombre_archivo);
+    if (archivo != 0){
+        printf("\n\tERROR CRITICO: EL ARCHIVO NO FUE CERRADO CORRECTAMENTE\t");
+    }
 }
+

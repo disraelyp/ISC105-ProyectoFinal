@@ -7,6 +7,16 @@ posiciones extraer_posiciones(const char *posicion) {
     for (i = 0; strcmp(lista_char[i], posicion); i++);
     return lista_enum[i];
 }
+void imprimir_posiciones(const posiciones posicion) {
+    posiciones lista_enum[64] = {a8, b8, c8, d8, e8, f8, g8, h8, a7, b7, c7, d7, e7, f7, g7, h7, a6, b6, c6, d6, e6, f6, g6, h6, a5, b5, c5, d5, e5, f5, g5, h5, a4, b4, c4, d4, e4, f4, g4, h4, a3, b3, c3, d3, e3, f3, g3, h3, a2, b2, c2, d2, e2, f2, g2, h2, a1, b1, c1, d1, e1, f1, g1, h1};
+    char lista_char[][64] = {"a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8", "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7", "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6", "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5", "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4", "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3", "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2", "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"};
+    for(int i=0; i<64; i++){
+        if (posicion==lista_enum[i]){
+            printf("%s", lista_char[i]);
+        }
+    }
+}
+
 int posiciones_jugables(const posiciones posicion){
     posiciones const lista[32]={b8, d8, f8, h8, b6, d6, f6, h6, b4, d4, f4, h4, b2, d2, f2, h2, a7, c7, e7, g7, a5, c5, e5, g5, a3, c3, e3, g3, a1, c1, e1, g1};
     for(int i=0; i<32; i++){
@@ -117,7 +127,7 @@ void imprimir_bloque(const bloque cont){
 }
 void imprimir_tablero(const tablero cont){
     bloque **contenedor=cont.plano;
-    printf("\n\t   ");
+    printf("\n\n\t   ");
     for(int h=0; h<FILA; ++h){
         printf("  %c", h+65);
     }
@@ -128,6 +138,12 @@ void imprimir_tablero(const tablero cont){
             imprimir_bloque(*(*(contenedor+i)+j));
         }
         printf("    %d", 8-i);
+        if(8-i==8){
+            printf("\tFichas BLANCAS: %d", contar_fichas(cont, cont.jugadorB));
+        }
+        if(8-i==7){
+            printf("\tFichas NEGRAS: %d", contar_fichas(cont, cont.jugadorA));
+        }
         printf("\n");
     }
     printf("\n\t   ");
@@ -141,6 +157,13 @@ void imprimir_color(const color representacion){
         printf("BLANCAS");
     } else {
         printf("NEGRAS");
+    };
+}
+void imprimir_representacion(const color representacion){
+    if (representacion == blancas){
+        printf("b");
+    } else {
+        printf("n");
     };
 }
 

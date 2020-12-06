@@ -28,7 +28,7 @@ int captura_int(const int limiteA, const int limiteB) {
     int contB;
     char contA[limiteB-limiteA];
     do {
-        scanf("%s", &contA);
+        gets(contA);
         if (verificar_char_int(contA) == 0){
             printf("\n\tERORR: ENTRADA INVALIDA, INTENTELO NUEVAMENTE. NOTA: NO INGRESE LETRAS NI SIMBOLOS, SOLO NUMEROS\n");
             printf("\t->");
@@ -43,7 +43,7 @@ int captura_int(const int limiteA, const int limiteB) {
             printf("\t->");
 
             do {
-                scanf("%s", &contA);
+                gets(contA);
                 if (verificar_char_int(contA) == 0){
                     printf("\n\tERORR: ENTRADA INVALIDA, INTENTELO NUEVAMENTE. NOTA: NO INGRESE LETRAS NI SIMBOLOS, SOLO NUMEROS\n", limiteA, limiteB);
                     printf("\t->");
@@ -56,6 +56,25 @@ int captura_int(const int limiteA, const int limiteB) {
         } while(contB<limiteA || contB>limiteB);
     }
     return contB;
+}
+int captura_charSN() {
+    char contA[]="a";
+    gets(contA);
+    int cont=contA[0];
+    if (cont != 110 && cont != 115 && cont != 78 && cont != 83){
+        do {
+            printf("\n\tERORR: ENTRADA INVALIDA, INTENTELO NUEVAMENTE.\n");
+            printf("\tRECORDATORIO: SI SU RESPUESTA ES UN SI, INGRESE 'S'. DE LO CONTRARIO INGRESE 'N'\n\n");
+            printf("->");
+            scanf("%s", &cont);
+            cont=contA[0];
+        } while(cont != 110 && cont != 115 && cont != 78 && cont != 83);
+    }
+    if (cont == 115 || cont == 83){
+        return 1;
+    } else {
+        return 0;
+    }
 }
 int char_int (const char *frase) {
     int contA=0, contB, contC;
@@ -94,4 +113,74 @@ int verificar_propietario(const tablero tableroJuego, const jugador *pJugador, c
         return 1;
     }
     return 0;
+}
+
+int turno(tablero *cont, jugador *a, jugador *b, const int contador){
+    int op;
+    do{
+        imprimir_tablero(*(cont));
+        printf("\n\nTurno #%02d, Jugador: %s. OPCIONES: 1) Jugar, 2) Rendirse, 3) Solicitar Empate. \n\t->", contador, a->nombre);
+        op=captura_int(1, 3);
+        switch (op) {
+            case 1:
+                turno_movimiento(cont, a, b);
+                if(contar_fichas(*(cont), b)){
+                    return 4;
+                }
+                return 1;
+            case 2:
+                return 2;
+            case 3:
+                printf("\n\t\tJUGADOR, %s: Tu contrincante a solicitado un empate. %cAceptas su solicitud? ->", b->nombre, 168);
+                if(captura_charSN()){
+                    return 3;
+                }
+        }
+    } while (op!=5);
+}
+void turno_movimiento(tablero *cont, jugador *a, jugador *b){
+    char movimiento[]="pa1 a1";
+    do{
+        printf("\n\tIndique Jugada *");
+        imprimir_color(a->representacion);
+        printf("* ->");
+        gets(movimiento);
+    }while (!verificar_movimiento(cont, a, b, movimiento));
+}
+
+void nueva_partida(){
+    jugador contA, contB;
+    creacion_jugadores(&contA, &contB);
+    tablero contC=generar_tablero(&contA, &contB);
+    int contador=1;
+    do{
+        switch (turno(&contC, &contA, &contB, contador)) {
+            case 1:
+                break;
+            case 4:
+                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n", contA.nombre);
+                return;
+            case 2:
+                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n", contA.nombre);
+                return;
+            case 3:
+                printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE LOS JUGADORES HAN ACORDADO UN EMPATE\n\n", contA.nombre);
+                return;
+        }
+        switch (turno(&contC, &contB, &contA, contador)) {
+            case 1:
+                break;
+            case 4:
+                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n", contB.nombre);
+                return;
+            case 2:
+                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n", contB.nombre);
+                return;
+            case 3:
+                printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE LOS JUGADORES HAN ACORDADO UN EMPATE\n\n");
+                return;
+        }
+        contador++;
+    } while (contC.total_fichasB || contC.total_fichasA);
+
 }
