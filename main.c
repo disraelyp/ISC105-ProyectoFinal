@@ -2,9 +2,6 @@
 #include "juego.c"
 #include "jugador.c"
 
-int recorrer_eliminar(tablero cont, jugador *a, jugador *b);
-int verificar_eliminar(bloque **contenedor, jugador *b, posiciones ficha);
-int alrededores(posiciones ficha, posiciones b);
 
 void turno_movimiento(tablero *cont, jugador *a, jugador *b){
     char movimiento[]="pa1 a1";
@@ -13,7 +10,7 @@ void turno_movimiento(tablero *cont, jugador *a, jugador *b){
         imprimir_color(a->representacion);
         printf("* ->");
         gets(movimiento);
-    }while (!verificar_posiciones(cont, a, b, movimiento));
+    }while (!verificar_movimiento(cont, a, b, movimiento));
     imprimir_tablero(*(cont));
 }
 
@@ -52,11 +49,11 @@ int main() {
     do{
         do {
             turno_movimiento(&cont, &b, &a);
-        } while (recorrer_eliminar(cont, &b, &a));
+        } while (recorrer_tablero(cont, &b, &a));
 
         do {
             turno_movimiento(&cont, &a, &b);
-        } while (recorrer_eliminar(cont, &a, &b));
+        } while (recorrer_tablero(cont, &a, &b));
 
     } while(i!=12);
 }

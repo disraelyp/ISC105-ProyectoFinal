@@ -7,7 +7,6 @@
 
 int const COLUMNA = 8;
 int const FILA = 8;
-int const TOTAL_FICHAS = 12;
 
 typedef enum {
     blancas,
@@ -42,19 +41,16 @@ typedef struct {
     char nombre[50];
     color representacion;
 } jugador;
-
 typedef struct{
     jugador *propietario;
     posiciones posicion;
     estado_peon estado;
 }peon;
-
 typedef struct {
     peon peones;
     estado_bloque estado;
     posiciones posicion;
 }bloque;
-
 typedef struct {
     jugador *jugadorA;
     int total_fichasA;
@@ -77,48 +73,53 @@ typedef struct {
 } notacion_algebraica;
 
 
+// FUNCIONES - JUGADOR.C
+jugador captura_jugador(const int);
+void creacion_jugadores (jugador*, jugador*);
+int verificar_char_int (const char*);
+int captura_int(const int, const int);
+int char_int (const char*);
+int verifica_entrada(const char*);
+int contar_fichas(const tablero, const jugador*);
+int verificar_propietario(const tablero, const jugador*, const posiciones);
+
+// FUNCIONES - TABLERO.C
+posiciones extraer_posiciones(const char*);
+int posiciones_jugables(const posiciones);
+int posiciones_diagonales(const posiciones, const posiciones);
+posiciones posicion_intermedia(const posiciones, const posiciones);
+posiciones calcular_posicion(const int);
+int ubicaciones_externas(const posiciones);
+int ubicaciones_iniciales(const int);
+int ubicaciones_jugables(const int);
+int calcular_ubicacion(const posiciones);
+int calcular_cordenadaX(const posiciones);
+int calcular_cordenadaY(const posiciones);
+void imprimir_bloque(const bloque);
+void imprimir_tablero(const tablero);
+void imprimir_color(const color);
+
+//FUNCIONES - JUEGO.C
+tablero generar_tablero(const jugador*, const jugador*);
+peon creacion_peon(const jugador*, const int, const int);
+bloque creacion_bloque(const jugador*, const int, const int);
+void cambio_posicion(tablero*, const jugador*, const posiciones, const posiciones);
+void eliminar_posicion(tablero*, const jugador*, const posiciones, const posiciones);
+int verificar_posiciones(const tablero, const posiciones, const posiciones);
+int verificar_movimiento(tablero*, jugador*, jugador*, const char*);
+void reajustar_tablero(tablero*);
+int recorrer_tablero(const tablero, const jugador*, const jugador*);
+int verificar_eliminar(const bloque**, const jugador*, const posiciones);
+int parametros_eliminar(const tablero, const posiciones, const posiciones);
+int verificar_ahogado(const tablero, posiciones const);
 
 
-// TABLERO
-
-int posiciones_jugables(posiciones const);
-posiciones calcular_posicion(int const);
-int cordenadas_externas(posiciones const);
-int cordenadas_iniciales(int const);
-int cordenadas_jugables(int const);
-int calcular_cordenada(posiciones const);
-int calcular_cordenadaX(posiciones const);
-int calcular_cordenadaY(posiciones const);
-tablero generar_tablero(jugador*, jugador*);
-peon creacion_peon(jugador*, int const, int const);
-bloque creacion_bloque(jugador*, int const, int const);
-void imprimir_bloque(bloque const);
-void imprimir_tablero(tablero const);
 
 
-// JUEGO
-void cambio_posicion(tablero*, jugador*, posiciones const, posiciones const);
-int verificar_movimiento(tablero const, posiciones const, posiciones const);
-int verificar_posiciones(tablero*, jugador *, jugador *, char const *);
-int verificar_propietario(tablero const, jugador*, posiciones const);
-int verificar_ahogado(tablero const, posiciones const);
-int contar_fichas(tablero const, jugador*);
-int posiciones_diagonales(posiciones const, posiciones const);
-void verificar_posiciones_eliminar(tablero*, jugador *, posiciones const, posiciones const);
-int recorrer_eliminar(tablero const, jugador*, jugador*);
-int verificar_eliminar(bloque**, jugador *, posiciones const);
-int reconfirmar_eliminar(tablero const, posiciones const, posiciones const);
 
 
-// JUGADOR
-jugador creacion_jugador(int);  //  CREA UNA ESTRUCTURA TIPO JUGADOR
-void creacion_jugadores (jugador*, jugador*);  //  CREA DOS ESTRUCTURAS TIPO JUGADOR CON DISTINTA REPRESENTACION
-void imprimir_color(color); // IMPRIME EL COLOR
-void nueva_partida();
-int verificar_char_to_int (char*);
-int captura_int(int, int);
-int char_to_int (char*);
-int verificar_frase(char *);
-posiciones posiciones_char(char*);
+
+
+
 
 #endif
