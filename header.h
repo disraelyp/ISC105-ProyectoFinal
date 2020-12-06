@@ -42,21 +42,24 @@ typedef struct {
     char nombre[50];
     color representacion;
 } jugador;
+
 typedef struct{
     jugador *propietario;
     posiciones posicion;
     estado_peon estado;
 }peon;
+
 typedef struct {
     peon peones;
     estado_bloque estado;
     posiciones posicion;
 }bloque;
+
 typedef struct {
     jugador *jugadorA;
     int total_fichasA;
 
-    jugador *jugadorB;
+    jugador *jugadorB; //
     int total_fichasB;
 
     estado_juego estado;
@@ -78,26 +81,33 @@ typedef struct {
 
 // TABLERO
 
-int posiciones_jugables(posiciones);
-posiciones calcular_posicion(int);
-int cordenadas_iniciales(int);
-int cordenadas_jugables(int);
-int calcular_cordenada(posiciones);
-int calcular_cordenadaX(posiciones);
-int calcular_cordenadaY(posiciones);
+int posiciones_jugables(posiciones const);
+posiciones calcular_posicion(int const);
+int cordenadas_externas(posiciones const);
+int cordenadas_iniciales(int const);
+int cordenadas_jugables(int const);
+int calcular_cordenada(posiciones const);
+int calcular_cordenadaX(posiciones const);
+int calcular_cordenadaY(posiciones const);
 tablero generar_tablero(jugador*, jugador*);
-peon creacion_peon(jugador*, int, int);
-bloque creacion_bloque(jugador*, int, int);
-void imprimir_bloque(bloque);
-void imprimir_tablero(tablero);
+peon creacion_peon(jugador*, int const, int const);
+bloque creacion_bloque(jugador*, int const, int const);
+void imprimir_bloque(bloque const);
+void imprimir_tablero(tablero const);
 
 
 // JUEGO
-int cambio_posicion(tablero*, jugador*, posiciones, posiciones);
-int verificar_movimiento(tablero, posiciones, posiciones);
-int verificar_posiciones(tablero*, jugador*, char *movimiento);
-int verificar_propietario(tablero tableroJuego, jugador*, posiciones);
-int contar_fichas(tablero, jugador*);
+int cambio_posicion(tablero*, jugador*, posiciones const, posiciones const);
+int verificar_movimiento(tablero const, posiciones const, posiciones const);
+int verificar_posiciones(tablero*, jugador *, jugador *, char const *);
+int verificar_propietario(tablero const, jugador*, posiciones const);
+int verificar_ahogado(tablero const, posiciones const);
+int contar_fichas(tablero const, jugador*);
+int posiciones_diagonales(posiciones const, posiciones const);
+int verificar_posiciones_eliminar(tablero*, jugador *, posiciones const, posiciones const);
+int recorrer_eliminar(tablero const, jugador*, jugador*);
+int verificar_eliminar(bloque**, jugador *, posiciones const);
+int reconfirmar_eliminar(tablero const, posiciones const, posiciones const);
 
 
 // JUGADOR
@@ -108,7 +118,7 @@ void nueva_partida();
 int verificar_char_to_int (char*);
 int captura_int(int, int);
 int char_to_int (char*);
-int verificar_frase(char*);
+int verificar_frase(char *);
 posiciones posiciones_char(char*);
 
 #endif
