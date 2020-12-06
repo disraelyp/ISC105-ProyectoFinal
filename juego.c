@@ -1,6 +1,6 @@
 #include "header.h"
 // 1: VACIA
-int cambio_posicion(tablero *cont, jugador *a, posiciones const inicial, posiciones const final){
+void cambio_posicion(tablero *cont, jugador *a, posiciones const inicial, posiciones const final){
     bloque **contenedor=cont->plano;
     int const xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
     estado_peon estadoPeon;
@@ -72,6 +72,7 @@ void reajustar_tablero(tablero *cont){
 }
 
 int verificar_posiciones(tablero *cont, jugador *a, jugador *b, char const *movimiento){
+    reajustar_tablero(cont);
     if (verificar_frase(movimiento)){
         char posicion_inicial[3]={*(movimiento+1), *(movimiento+2), '\0'}, posicion_final[3]={*(movimiento+4), *(movimiento+5), '\0'};
         posiciones inicial =posiciones_char(posicion_inicial), final =posiciones_char(posicion_final);
@@ -81,8 +82,9 @@ int verificar_posiciones(tablero *cont, jugador *a, jugador *b, char const *movi
                     if(reconfirmar_eliminar(*(cont), inicial, final)){
                         if(verificar_propietario(*(cont), a, inicial)){
                             verificar_posiciones_eliminar(cont, a, inicial, final);
-                            reajustar_tablero(cont);
-                            return 1;
+                            if(!recorrer_eliminar(*(cont), a, b)){
+                                return 1;
+                            }
                         } else{
                             printf("\n\tERORR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
                         }
@@ -100,7 +102,6 @@ int verificar_posiciones(tablero *cont, jugador *a, jugador *b, char const *movi
                 if(verificar_movimiento(*(cont), inicial, final)){
                     if(verificar_propietario(*(cont), a, inicial)){
                         cambio_posicion(cont, a, inicial, final);
-                        reajustar_tablero(cont);
                         return 1;
                     } else{
                         printf("\n\tERORR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
@@ -179,7 +180,7 @@ posiciones posicion_intermedia(posiciones inicial, posiciones final){
     return calcular_posicion((final_cordenada+inicial_cordenada)/2);
 }
 
-int verificar_posiciones_eliminar(tablero *cont, jugador *a, posiciones inicial, posiciones final){
+void verificar_posiciones_eliminar(tablero *cont, jugador *a, posiciones inicial, posiciones final){
     bloque **contenedor=cont->plano;
     const int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
     const posiciones intermedia =  posicion_intermedia(inicial, final);
@@ -204,11 +205,12 @@ int verificar_posiciones_eliminar(tablero *cont, jugador *a, posiciones inicial,
 
 
 int recorrer_eliminar(tablero const cont, jugador *a, jugador *b){
-    bloque **contenedor=cont.plano;
+    bloque const **contenedor=cont.plano;
     int contador=0;
+
     for (int i = 0; i < COLUMNA; ++i) {
         for (int j = 0; j < FILA; ++j) {
-            if((*(*(contenedor + i) + j)).peones.propietario == a){
+            if((*(*(contenedor + i) + j)).estado!=casilla_blanca && (*(*(contenedor + i) + j)).peones.propietario == a){
                 if(verificar_eliminar(contenedor, b, calcular_posicion(contador + 1))) {
                     return 1;
                 }
@@ -220,34 +222,46 @@ int recorrer_eliminar(tablero const cont, jugador *a, jugador *b){
 }
 int verificar_eliminar(bloque **contenedor, jugador *b, posiciones const ficha){
     int contador=0;
-    for (int i = 0; i < COLUMNA; ++i) {
-        for (int j = 0; j < FILA; ++j) {
+    for (int i = 0; i < COLUMNA; i++) {
+        for (int j = 0; j < FILA; j++) {
             if((*(*(contenedor + i) + j)).peones.propietario == b){
                 if((*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.propietario->representacion==blancas || (*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.estado==dama) {
-
-                    if ((calcular_cordenadaX(ficha) + 1 == calcular_cordenadaX(calcular_posicion(contador + 1))) && (calcular_cordenadaY(ficha) + 1 == calcular_cordenadaY(calcular_posicion(contador + 1)))) { // ARREGLAR
-                        if ((*(*(contenedor + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha) +
-                               2)).estado == disponible) {
-                            return 1;
+                    if(calcular_cordenadaX(ficha)+1<=7 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)+1<=7 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
+                        if ((calcular_cordenadaX(ficha) + 1 == calcular_cordenadaX(calcular_posicion(contador + 1))) && (calcular_cordenadaY(ficha) + 1 == calcular_cordenadaY(calcular_posicion(contador + 1)))) { // ARREGLAR
+                            if((calcular_cordenadaY(ficha)+2)<=7 && (calcular_cordenadaX(ficha)+2)<=7){
+                                if ((*(*(contenedor + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha)+2)).estado == disponible) {
+                                    return 1;
+                                }
+                            }
                         }
                     }
-                    if ((calcular_cordenadaX(ficha) - 1 == calcular_cordenadaX(calcular_posicion(contador + 1))) && (calcular_cordenadaY(ficha) + 1 == calcular_cordenadaY(calcular_posicion(contador + 1)))) {
-                        if ((*(*(contenedor + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha) -
-                               2)).estado == disponible) {
-                            return 1;
+                    if(calcular_cordenadaX(ficha)-1>=0 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)+1<=7 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
+                        if ((calcular_cordenadaX(ficha)-1 == calcular_cordenadaX(calcular_posicion(contador + 1))) && (calcular_cordenadaY(ficha) + 1 == calcular_cordenadaY(calcular_posicion(contador + 1)))) {
+                            if((calcular_cordenadaY(ficha)+2)<=7 && (calcular_cordenadaX(ficha)-2)>=0){
+                                if ((*(*(contenedor + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha)-2)).estado == disponible) {
+                                    return 1;
+                                }
+                            }
                         }
                     }
                 }
-
                 if((*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.propietario->representacion==negras || (*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.estado==dama) {
-                    if((calcular_cordenadaX(ficha)-1 == calcular_cordenadaX(calcular_posicion(contador+1))) && (calcular_cordenadaY(ficha) - 1 == calcular_cordenadaY(calcular_posicion(contador+1)))){
-                        if((*(*(contenedor + calcular_cordenadaY(ficha)-2) + calcular_cordenadaX(ficha)-2)).estado==disponible){
-                            return 1;
+                    if(calcular_cordenadaX(ficha)-1>=0 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)-1>=0 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
+                        if((calcular_cordenadaX(ficha)-1 == calcular_cordenadaX(calcular_posicion(contador+1))) && (calcular_cordenadaY(ficha) - 1 == calcular_cordenadaY(calcular_posicion(contador+1)))){
+                            if((calcular_cordenadaY(ficha)-2)>=0 && (calcular_cordenadaX(ficha)-2)>=0){
+                                if((*(*(contenedor + calcular_cordenadaY(ficha)-2) + calcular_cordenadaX(ficha)-2)).estado==disponible){
+                                    return 1;
+                                }
+                            }
                         }
                     }
-                    if((calcular_cordenadaX(ficha)+1 == calcular_cordenadaX(calcular_posicion(contador+1))) && (calcular_cordenadaY(ficha)-1 == calcular_cordenadaY(calcular_posicion(contador+1)))){ // ARREGLAR
-                        if((*(*(contenedor + calcular_cordenadaY(ficha)-2) + calcular_cordenadaX(ficha)+2)).estado==disponible){
-                            return 1;
+                    if(calcular_cordenadaX(ficha)+1<=7 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)-1>=0 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
+                        if((calcular_cordenadaX(ficha)+1 == calcular_cordenadaX(calcular_posicion(contador+1))) && (calcular_cordenadaY(ficha)-1 == calcular_cordenadaY(calcular_posicion(contador+1)))){ // ARREGLAR
+                            if((calcular_cordenadaY(ficha)-2)>=0 && (calcular_cordenadaX(ficha)+2)<=7){
+                                if((*(*(contenedor + calcular_cordenadaY(ficha)-2) + calcular_cordenadaX(ficha)+2)).estado==disponible){
+                                    return 1;
+                                }
+                            }
                         }
                     }
                 }

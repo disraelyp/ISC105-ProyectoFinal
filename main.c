@@ -6,6 +6,16 @@ int recorrer_eliminar(tablero cont, jugador *a, jugador *b);
 int verificar_eliminar(bloque **contenedor, jugador *b, posiciones ficha);
 int alrededores(posiciones ficha, posiciones b);
 
+void turno_movimiento(tablero *cont, jugador *a, jugador *b){
+    char movimiento[]="pa1 a1";
+    do{
+        printf("\n\tIndique Jugada *");
+        imprimir_color(a->representacion);
+        printf("* ->");
+        gets(movimiento);
+    }while (!verificar_posiciones(cont, a, b, movimiento));
+    imprimir_tablero(*(cont));
+}
 
 
 int main() {
@@ -40,23 +50,15 @@ int main() {
     imprimir_tablero(cont);
     int i=0;
     do{
-        do{
-            printf("\n\tIndique Jugada *");
-            imprimir_color(b.representacion);
-            printf("* ->");
-            gets(movimiento);
-        }while (!verificar_posiciones(&cont, &b, &a, movimiento));
-        imprimir_tablero(cont);
-        do{
-            printf("\n\tIndique Jugada *");
-            imprimir_color(a.representacion);
-            printf("* ->");
-           gets(movimiento);
-        }while (!verificar_posiciones(&cont, &a, &b, movimiento));
-        imprimir_tablero(cont);
+        do {
+            turno_movimiento(&cont, &b, &a);
+        } while (recorrer_eliminar(cont, &b, &a));
+
+        do {
+            turno_movimiento(&cont, &a, &b);
+        } while (recorrer_eliminar(cont, &a, &b));
+
     } while(i!=12);
-
-
 }
 
 

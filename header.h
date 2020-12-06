@@ -97,14 +97,14 @@ void imprimir_tablero(tablero const);
 
 
 // JUEGO
-int cambio_posicion(tablero*, jugador*, posiciones const, posiciones const);
+void cambio_posicion(tablero*, jugador*, posiciones const, posiciones const);
 int verificar_movimiento(tablero const, posiciones const, posiciones const);
 int verificar_posiciones(tablero*, jugador *, jugador *, char const *);
 int verificar_propietario(tablero const, jugador*, posiciones const);
 int verificar_ahogado(tablero const, posiciones const);
 int contar_fichas(tablero const, jugador*);
 int posiciones_diagonales(posiciones const, posiciones const);
-int verificar_posiciones_eliminar(tablero*, jugador *, posiciones const, posiciones const);
+void verificar_posiciones_eliminar(tablero*, jugador *, posiciones const, posiciones const);
 int recorrer_eliminar(tablero const, jugador*, jugador*);
 int verificar_eliminar(bloque**, jugador *, posiciones const);
 int reconfirmar_eliminar(tablero const, posiciones const, posiciones const);
