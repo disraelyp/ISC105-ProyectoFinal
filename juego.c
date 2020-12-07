@@ -5,14 +5,19 @@ tablero generar_tablero(const jugador *jugadorA, const jugador *jugadorB) {
     for (int i = 0; i<FILA; ++i) {
         *(bloques+i) = (bloque *) malloc(8* sizeof(bloque));
     }
-    int posicion=1;
+    int posicion=1, cont=1;
     for (int i = 0; i < COLUMNA; i++) {
         for (int j = 0; j < FILA; j++) {
             if (ubicaciones_iniciales(posicion) && posicion < (FILA * COLUMNA) / 2){
-                if(jugadorB->representacion == blancas){
-                    *(*(bloques+i)+j)=creacion_bloque(jugadorB, posicion, 1);
+                if(cont==10){
+                    if(jugadorB->representacion == blancas){
+                        *(*(bloques+i)+j)=creacion_bloque(jugadorB, posicion, 1);
+                    } else {
+                        *(*(bloques+i)+j)=creacion_bloque(jugadorA, posicion, 1);
+                    }
                 } else {
-                    *(*(bloques+i)+j)=creacion_bloque(jugadorA, posicion, 1);
+                    cont++;
+                    *(*(bloques+i)+j)= creacion_bloque(NULL, posicion, 1);
                 }
             } else {
                 if (ubicaciones_iniciales(posicion) && posicion > (FILA * COLUMNA) / 2){
@@ -150,21 +155,20 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
                         if(verificar_propietario(*(cont), a, inicial)){
                             eliminar_posicion(cont, a, b, inicial, final, nombre_archivo, id, nombre_registro);
                             reajustar_tablero(cont);
-                            printf("\n%d / %d\n", cont->total_fichasA, cont->total_fichasB);
                             if(!recorrer_tablero(*(cont), a, b)){
                                 return 1;
                             }
                         } else{
-                            printf("\n\tERORR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
+                            printf("\n\tERROR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
                         }
                     } else {
-                        printf("\n\tERORR: EL MOVIMIENTO ES INVALIDO.\n");
+                        printf("\n\tERROR: EL MOVIMIENTO ES INVALIDO.\n");
                     }
                 }else{
                     if(verificar_posiciones(*(cont), inicial, final)){
-                        printf("\n\tERORR: EL MOVIMIENTO ES INVALIDO, DEBIDO A QUE UNA DE TUS FICHAS DEBE ELEMINAR UNA FICHA OPONENTE.\n");
+                        printf("\n\tERROR: EL MOVIMIENTO ES INVALIDO, DEBIDO A QUE UNA DE TUS FICHAS DEBE ELEMINAR UNA FICHA OPONENTE.\n");
                     } else {
-                        printf("\n\tERORR: EL MOVIMIENTO ES INVALIDO.\n");
+                        printf("\n\tERROR: EL MOVIMIENTO ES INVALIDO.\n");
                     }
                 }
             } else {
@@ -174,18 +178,18 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
                         reajustar_tablero(cont);
                         return 1;
                     } else{
-                        printf("\n\tERORR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
+                        printf("\n\tERROR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
                     }
 
                 } else{
-                    printf("\n\tERORR: EL MOVIMIENTO ES INVALIDO.\n");
+                    printf("\n\tERROR: EL MOVIMIENTO ES INVALIDO.\n");
                 }
             }
         } else {
-            printf("\n\tERORR: LAS POSICIONES INGRESADAS NO SON VALIDAS.\n");
+            printf("\n\tERROR: LAS POSICIONES INGRESADAS NO SON VALIDAS.\n");
         }
     } else {
-        printf("\n\tERORR: LA ENTRADA ES INVALIDAD, VERIFIQUE EL FORMATO ALGEBRAICO.\n");
+        printf("\n\tERROR: LA ENTRADA ES INVALIDA, VERIFIQUE EL FORMATO ALGEBRAICO.\n");
     }
     return 0;
 }
@@ -281,33 +285,38 @@ int parametros_eliminar(const tablero cont, const posiciones inicial, const posi
     }
     return 0;
 }
-
-
-
-// PENDIENTE
-int verificar_ahogado(const tablero tableroJuego, posiciones const inicial){
+int verificar_ahogado(const tablero tableroJuego){
     bloque **contenedor=tableroJuego.plano;
-    int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial);
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blancas && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-        if ((*(*(contenedor+(yInicial + 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
-            if ((*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
-                return 2;
+    for(int i=0; i<64; i++){
+        posiciones inicial=calcular_posicion(i+1);
+        if(posiciones_jugables(inicial)){
+            int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial);
+            if((*(*(contenedor + yInicial) + xInicial)).estado==bloqueado){
+                if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == blancas){
+                    if(xInicial-1 >= 0 && yInicial+1 <= 7){
+                        if ((*(*(contenedor+(yInicial + 1)) + (xInicial - 1))).estado == disponible){
+                            return 1;
+                        }
+                    }
+                    if(xInicial+1 <= 7 && yInicial+1 <= 7){
+                        if ((*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible){
+                            return 1;
+                        }
+                    }
+                }
+                if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negras){
+                    if(xInicial-1>=0 && yInicial-1>=0){
+                        if ((*(*(contenedor+(yInicial - 1)) + (xInicial - 1))).estado == disponible){
+                            return 1;
+                        }
+                    }
+                    if(xInicial+1<=7 && yInicial-1>=0){
+                        if ((*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible){
+                            return 1;
+                        }
+                    }
+                }
             }
-            return 1;
-        }
-        if ((*(*(contenedor+(yInicial + 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial <= 7){
-            return 1;
-        }
-    }
-    if((*(*(contenedor + yInicial) + xInicial)).peones.propietario->representacion == negras && (*(*(contenedor + yInicial) + xInicial)).estado != casilla_blanca){
-        if ((*(*(contenedor+(yInicial - 1)) + (xInicial - 1))).estado == disponible && xInicial >= 0 && yInicial <= 7){
-            if ((*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
-                return 2;
-            }
-            return 1;
-        }
-        if ((*(*(contenedor+(yInicial - 1)) + (xInicial + 1))).estado == disponible && xInicial <= 7 && yInicial >= 0){
-            return 1;
         }
     }
     return 0;

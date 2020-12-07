@@ -3,4 +3,4 @@ project(Proyecto_Final C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Proyecto_Final main.c cmake-build-debug/header.h)
+add_executable(Proyecto_Final main.c)

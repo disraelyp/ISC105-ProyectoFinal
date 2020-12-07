@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+C:/Users/Disraely/Desktop/Proyecto Final/archivos.c
+header.h
+C:/Users/Disraely/Desktop/Proyecto Final/header.h
+
 C:/Users/Disraely/Desktop/Proyecto Final/header.h
 stdlib.h
 -
@@ -29,6 +33,8 @@ juego.c
 C:/Users/Disraely/Desktop/Proyecto Final/juego.c
 jugador.c
 C:/Users/Disraely/Desktop/Proyecto Final/jugador.c
+archivos.c
+C:/Users/Disraely/Desktop/Proyecto Final/archivos.c
 
 C:/Users/Disraely/Desktop/Proyecto Final/tablero.c
 header.h

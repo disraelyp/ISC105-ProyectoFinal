@@ -88,18 +88,18 @@ int char_int (const char *frase) {
 }
 int verifica_entrada(const char *frase){
     if (strlen(frase)==6 && *(frase+1)>=97 && *(frase+1)<=104 && *(frase+2)>=49 && *(frase+2)<=56 && *(frase+3)==' '&& *(frase+4)>=97 && *(frase+4)<=104 && *(frase+5)>=49 && *(frase+5)<=56){
-        if ((*frase)=='p' || (*frase)=='P'){
+        if ((*frase)=='p' || (*frase)=='P' || (*frase)=='n' || (*frase)=='N' || (*frase)=='b' || (*frase)=='B'){
             return 1;
         }
     }
     return 0;
 }
-int contar_fichas(const tablero cont, const jugador *a){
+int contar_fichas(const tablero cont, const jugador *pJugadorA){
     const bloque **contenedor=cont.plano;
     int contador=0;
     for (int i = 0; i < COLUMNA; ++i) {
         for (int j = 0; j < FILA; ++j) {
-            if((*(*(contenedor + i) + j)).peones.propietario == a){
+            if((*(*(contenedor + i) + j)).peones.propietario == pJugadorA){
                 contador++;
             }
         }
@@ -114,40 +114,41 @@ int verificar_propietario(const tablero tableroJuego, const jugador *pJugador, c
     }
     return 0;
 }
-
-int turno(tablero *cont, jugador *a, jugador *b, const int contador, char *nombre_archivo, const int id, const char *nombre_registro){
+int turno(tablero *cont, jugador *pJugadorA, jugador *pJugadorB, const int contador, char *nombre_archivo, const int id, const char *nombre_registro){
     int op;
     do{
         imprimir_tablero(*(cont));
-        printf("\n\nTurno #%02d, Jugador: %s. OPCIONES: 1) Jugar, 2) Rendirse, 3) Solicitar Empate. \n\t->", contador, a->nombre);
+        printf("\n\nTurno #%02d, Jugador: %s. OPCIONES: 1) Jugar, 2) Rendirse, 3) Solicitar Empate. \t->", contador, pJugadorA->nombre);
         op=captura_int(1, 3);
         switch (op) {
             case 1:
-                turno_movimiento(cont, a, b, nombre_archivo, id, nombre_registro);
-                if(!contar_fichas(*(cont), b)){
+                turno_movimiento(cont, pJugadorA, pJugadorB, nombre_archivo, id, nombre_registro);
+                if(!contar_fichas(*(cont), pJugadorB)){
                     return 4;
+                }
+                if(!verificar_ahogado(*(cont))){
+                    return 5;
                 }
                 return 1;
             case 2:
                 return 2;
             case 3:
-                printf("\n\t\tJUGADOR, %s: Tu contrincante a solicitado un empate. %cAceptas su solicitud? ->", b->nombre, 168);
+                printf("\n\t\tJUGADOR, %s: Tu contrincante a solicitado un empate. %cAceptas su solicitud? ->", pJugadorB->nombre, 168);
                 if(captura_charSN()){
                     return 3;
                 }
         }
     } while (op!=5);
 }
-void turno_movimiento(tablero *cont, jugador *a, jugador *b, char *nombre_archivo, const int id, const char *nombre_registro){
+void turno_movimiento(tablero *cont, jugador *pJugadorA, jugador *pJugadorB, char *nombre_archivo, const int id, const char *nombre_registro){
     char movimiento[]="pa1 a1";
     do{
         printf("\n\tIndique Jugada *");
-        imprimir_color(a->representacion);
+        imprimir_color(pJugadorA->representacion);
         printf("* ->");
         gets(movimiento);
-    }while (!verificar_movimiento(cont, a, b, movimiento, nombre_archivo, id, nombre_registro));
+    }while (!verificar_movimiento(cont, pJugadorA, pJugadorB, movimiento, nombre_archivo, id, nombre_registro));
 }
-
 void nueva_partida(const char *nombre_archivo, const char *nombre_registro){
     int id=nuevo_id(nombre_archivo);
     jugador contA, contB;
@@ -155,44 +156,56 @@ void nueva_partida(const char *nombre_archivo, const char *nombre_registro){
     tablero contC=generar_tablero(&contA, &contB);
     int contador=1, ciclo=1;
     do{
+        if(!verificar_ahogado(contC)){
+            printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE YA NO HAY MOVIMIENTOS DISPONIBLES\n\n");
+            break;
+        }
         switch (turno(&contC, &contA, &contB, contador, nombre_archivo, id, nombre_registro)) {
             case 1:
                 break;
             case 4:
-                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n", contA.nombre);
+                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n\n\n\n", contA.nombre);
                 agregar_registro(nombre_registro, &contB, 0, 1);
                 agregar_registro(nombre_registro, &contA, 1, 0);
                 ciclo=0;
-                return;
+                break;
             case 2:
-                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n", contB.nombre);
+                printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n\n\n\n", contB.nombre);
                 agregar_registro(nombre_registro, &contB, 1, 0);
                 agregar_registro(nombre_registro, &contA, 0, 1);
                 ciclo=0;
-                return;
+                break;
             case 3:
-                printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE LOS JUGADORES HAN ACORDADO UN EMPATE\n\n");
+                printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE LOS JUGADORES HAN ACORDADO UN EMPATE\n\n\n\n\n");
                 ciclo=0;
-                return;
+                break;
+            case 5:
+                printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE YA NO HAY MOVIMIENTOS DISPONIBLES\n\n\n\n\n");
+                ciclo=0;
+                break;
         }
-        if(ciclo){
+        if(ciclo!=0){
             switch (turno(&contC, &contB, &contA, contador, nombre_archivo, id, nombre_registro)) {
                 case 1:
                     break;
                 case 4:
-                    printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n", contB.nombre);
+                    printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n\n\n\n", contB.nombre);
                     agregar_registro(nombre_registro, &contB, 1, 0);
                     agregar_registro(nombre_registro, &contA, 0, 1);
                     ciclo=0;
                     break;
                 case 2:
-                    printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n", contA.nombre);
+                    printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n\n\n\n", contA.nombre);
                     agregar_registro(nombre_registro, &contB, 0, 1);
                     agregar_registro(nombre_registro, &contA, 1, 0);
                     ciclo=0;
                     break;
                 case 3:
-                    printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE LOS JUGADORES HAN ACORDADO UN EMPATE\n\n");
+                    printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE LOS JUGADORES HAN ACORDADO UN EMPATE\n\n\n\n\n");
+                    ciclo=0;
+                    break;
+                case 5:
+                    printf("\n\n\tLA PARTIDA A FINALIZADO DEBIDO A QUE YA NO HAY MOVIMIENTOS DISPONIBLES\n\n\n\n\n");
                     ciclo=0;
                     break;
             }

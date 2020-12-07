@@ -49,103 +49,59 @@ typedef struct {
 typedef struct {
     jugador *jugadorA;
     int total_fichasA;
-
-    jugador *jugadorB; //
+    jugador *jugadorB;
     int total_fichasB;
-
-    bloque **plano; // MATRIS 8*8 DE TODAS LAS FICHAS
+    bloque **plano;
 } tablero;
-
-
-
 typedef struct {
-    int id_juego; // NUMERO DE PARTIDA
+    int id_juego;
     char nombreA[50];
     color colorA;
     char nombreB[50];
     int inicial;
     int final;
 } notacion_algebraica;
-
 typedef struct {
-    int id_jugador; // NUMERO DE PARTIDA
+    int id_jugador;
     char nombre[50];
     int total_victorias;
     int total_derrotas;
 } record_partidas;
 
+// FUNCIONES 'ARCHIVOS.C'
+void agregar_notacion(const char*, int const id, jugador*, jugador*, posiciones, posiciones); // CREA UNA ESTRUCTURA DE TIPO NOTACION Y LA AGREGA
+void lista_notaciones(const char*); // PRESENTA UNA LISTA DE NOTACIONES
+int nuevo_id(const char*); // CREA UN NUEVO ID
+int cantidad_id(const char*); // CUENTA LA CANTIDAD DE ID EN UN ARCHIVO
+void leer_archivo(const char*, int id); // PRESENTA UNA LISTA DE RECORD DE JUGADORES
+void escribir_archivo(const char*, notacion_algebraica); // AGREGA UN REGISTRO EN EL ARCHIVO DE RECORDS
+int cantidad_notaciones(const char*); // CANTIDAD DE NOTACIONES
+FILE* abrir_archivo(const char*, char *funcion); // ABRIR UN ARCHIVO
+void cerrar_archivo(FILE*); // CERRAR UN ARCHIVO
+int verificar_archivo(const char*); // VERIFICAR SI UN ARCHIVO EXISTE
+int cantidad_registros(const char*); // CANTIDAD DE RECORDS
+void modificar_registros(const char*, record_partidas, int posicion); // ACTUALIZA UN RECORD
+void escribir_registro(const char*, record_partidas); // CREA UNA ESTRUCTURA DE TIPO RECORDS
+void recorrer_registro(const char*, record_partidas); // RECORRE EL ARCHIVO DE RECORDS
+void agregar_registro(const char*, jugador*, int, int); // AGREGA UN REGISTRO EN EL ARCHIVO DE NOTACIONES
+int funcion_ordenamiento(const void*, const void*); // FUNCION DE ORDENAMIENTO PARA EL QSORT
+void leer_registro(const char*); // IMPRIME LA LISTA DE RECORD
 
+//ARCHIVO 'JUGADOR.C'
+jugador captura_jugador(const int); // CREA UNA ESTRUCTURA TIPO JUGADOR
+void creacion_jugadores (jugador*, jugador *); // CREA DOS ESTRUCTURAS TIPO JUGADOR CON DISTINTO COLOR
+int verificar_char_int (const char*); // VERIFICA SI UN CHAR PUEDE CONVERTIRSE A UN INT
+int captura_int(const int, const int); // CAPTURA UN VALOR TIPO INT
+int captura_charSN(); // CAPTURA UNA RESPUESTA TIPO CHAR
+int char_int (const char*); // CONVIERTE UN ELEMENTO TIPO CHAR A TIPO INT
+int verifica_entrada(const char*); // VERIFICIA LA ENTRADA DE NOTACIONES ALGEBRAICA
+int contar_fichas(const tablero, const jugador*); // CUENTA LAS FICHAS DE UN JUGADOR
+int verificar_propietario(const tablero, const jugador*, const posiciones); // VERIFICA EL PROPETARIO DE UNA FICHA
+int turno(tablero*, jugador*, jugador*, const int, char*, const int, const char*); // TURNO DE UN JUGADOR
+void turno_movimiento(tablero*, jugador*, jugador*, char*, const int, const char*); // MOVIMIENTO DE UNA FICHA
+void nueva_partida(const char*, const char*); // NUEVA PARTIDA
 
-void agregar_notacion(const char *nombre_archivo, int const id, jugador *a, jugador *b, posiciones inicial, posiciones final);
-void lista_notaciones(char *nombre_archivo);
-int nuevo_id(char *nombre_archivo);
-int cantidad_id(char *nombre_archivo);
-void leer_archivo(char *nombre_archivo, int id);
-void escribir_archivo(char *nombre_archivo, const notacion_algebraica notacion);
-int cantidad_notaciones(char *nombre);
-FILE* abrir_archivo(char *nombre_archivo, char *funcion);
-void cerrar_archivo(FILE *nombre_archivo);
-int verificar_archivo(char *nombre_archivo);
-
-int cantidad_registros(char *nombre);
-void modificar_registros(char *nombre_archivo, record_partidas cont, int posicion);
-void escribir_registro(char *nombre_archivo, record_partidas cont);
-void recorrer_registro(char *nombre_archivo, record_partidas cont);
-void agregar_registro(char *nombre_archivo, jugador *a, int victorias, int derrotas);
-
-void leer_registro(char *nombre_archivo);
-
-
-
-
-
-// FUNCIONES - JUGADOR.C
-jugador captura_jugador(const int);
-void creacion_jugadores (jugador*, jugador*);
-int verificar_char_int (const char*);
-int captura_int(const int, const int);
-int char_int (const char*);
-int verifica_entrada(const char*);
-int contar_fichas(const tablero, const jugador*);
-int verificar_propietario(const tablero, const jugador*, const posiciones);
-void turno_movimiento(tablero *, jugador *, jugador*, char*, const int, const char*);
-int turno(tablero*, jugador*, jugador*, const int, char*, const int, const char*);
-
-// FUNCIONES - TABLERO.C
-posiciones extraer_posiciones(const char*);
-int posiciones_jugables(const posiciones);
-int posiciones_diagonales(const posiciones, const posiciones);
-posiciones posicion_intermedia(const posiciones, const posiciones);
-posiciones calcular_posicion(const int);
-int ubicaciones_externas(const posiciones);
-int ubicaciones_iniciales(const int);
-int ubicaciones_jugables(const int);
-int calcular_ubicacion(const posiciones);
-int calcular_cordenadaX(const posiciones);
-int calcular_cordenadaY(const posiciones);
-void imprimir_bloque(const bloque);
-void imprimir_tablero(const tablero);
-void imprimir_color(const color);
-void imprimir_representacion(const color);
-void imprimir_posiciones(const posiciones);
-
-//FUNCIONES - JUEGO.C
-tablero generar_tablero(const jugador*, const jugador*);
-peon creacion_peon(const jugador*, const int, const int);
-bloque creacion_bloque(const jugador*, const int, const int);
-void cambio_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int, const char*);
-void eliminar_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int, const char*);
-int verificar_posiciones(const tablero, const posiciones, const posiciones);
-int verificar_movimiento(tablero*, jugador*, jugador*, const char*, const char*, int const id, const char *nombre_registro);
-void reajustar_tablero(tablero*);
-int recorrer_tablero(const tablero, const jugador*, const jugador*);
-int verificar_eliminar(const bloque**, const jugador*, const posiciones);
-int parametros_eliminar(const tablero, const posiciones, const posiciones);
-int verificar_ahogado(const tablero, posiciones const);
-
-
-
-
+//ARCHIVO 'juego.c'
 
 
 

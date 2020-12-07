@@ -74,9 +74,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="C:/Users/Disraely/Desktop/Proyecto Final/cmake-build-debug/header.h">
-			<Option target="Proyecto_Final"/>
-		</Unit>
 		<Unit filename="C:/Users/Disraely/Desktop/Proyecto Final/main.c">
 			<Option target="Proyecto_Final"/>
 		</Unit>
