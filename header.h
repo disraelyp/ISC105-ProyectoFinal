@@ -67,21 +67,33 @@ typedef struct {
     int final;
 } notacion_algebraica;
 
+typedef struct {
+    int id_jugador; // NUMERO DE PARTIDA
+    char nombre[50];
+    int total_victorias;
+    int total_derrotas;
+} record_partidas;
 
 
-int nuevo_id(char*);
-void leer_archivo(char*, int id);
-void escribir_archivo(char*, const notacion_algebraica);
-int cantidad_notaciones(char*);
-FILE* abrir_archiv(char*, char *);
-void cerrar_archiv(FILE*);
+
+void agregar_notacion(const char *nombre_archivo, int const id, jugador *a, jugador *b, posiciones inicial, posiciones final);
+void lista_notaciones(char *nombre_archivo);
+int nuevo_id(char *nombre_archivo);
+int cantidad_id(char *nombre_archivo);
+void leer_archivo(char *nombre_archivo, int id);
+void escribir_archivo(char *nombre_archivo, const notacion_algebraica notacion);
+int cantidad_notaciones(char *nombre);
+FILE* abrir_archivo(char *nombre_archivo, char *funcion);
+void cerrar_archivo(FILE *nombre_archivo);
 int verificar_archivo(char *nombre_archivo);
-void lista_notaciones(char *);
-void agregar_notacion(const char *nombre_archivo, int const id, jugador*, jugador*, posiciones, posiciones);
 
+int cantidad_registros(char *nombre);
+void modificar_registros(char *nombre_archivo, record_partidas cont, int posicion);
+void escribir_registro(char *nombre_archivo, record_partidas cont);
+void recorrer_registro(char *nombre_archivo, record_partidas cont);
+void agregar_registro(char *nombre_archivo, jugador *a, int victorias, int derrotas);
 
-
-
+void leer_registro(char *nombre_archivo);
 
 
 
@@ -96,8 +108,8 @@ int char_int (const char*);
 int verifica_entrada(const char*);
 int contar_fichas(const tablero, const jugador*);
 int verificar_propietario(const tablero, const jugador*, const posiciones);
-void turno_movimiento(tablero *, jugador *, jugador*, char*, const int);
-int turno(tablero*, jugador*, jugador*, const int, char*, const int);
+void turno_movimiento(tablero *, jugador *, jugador*, char*, const int, const char*);
+int turno(tablero*, jugador*, jugador*, const int, char*, const int, const char*);
 
 // FUNCIONES - TABLERO.C
 posiciones extraer_posiciones(const char*);
@@ -121,10 +133,10 @@ void imprimir_posiciones(const posiciones);
 tablero generar_tablero(const jugador*, const jugador*);
 peon creacion_peon(const jugador*, const int, const int);
 bloque creacion_bloque(const jugador*, const int, const int);
-void cambio_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int);
-void eliminar_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int);
+void cambio_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int, const char*);
+void eliminar_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, const int, const char*);
 int verificar_posiciones(const tablero, const posiciones, const posiciones);
-int verificar_movimiento(tablero*, jugador*, jugador*, const char*, const char*, int const id);
+int verificar_movimiento(tablero*, jugador*, jugador*, const char*, const char*, int const id, const char *nombre_registro);
 void reajustar_tablero(tablero*);
 int recorrer_tablero(const tablero, const jugador*, const jugador*);
 int verificar_eliminar(const bloque**, const jugador*, const posiciones);

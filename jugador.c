@@ -115,7 +115,7 @@ int verificar_propietario(const tablero tableroJuego, const jugador *pJugador, c
     return 0;
 }
 
-int turno(tablero *cont, jugador *a, jugador *b, const int contador, char *nombre_archivo, const int id){
+int turno(tablero *cont, jugador *a, jugador *b, const int contador, char *nombre_archivo, const int id, const char *nombre_registro){
     int op;
     do{
         imprimir_tablero(*(cont));
@@ -123,7 +123,7 @@ int turno(tablero *cont, jugador *a, jugador *b, const int contador, char *nombr
         op=captura_int(1, 3);
         switch (op) {
             case 1:
-                turno_movimiento(cont, a, b, nombre_archivo, id);
+                turno_movimiento(cont, a, b, nombre_archivo, id, nombre_registro);
                 if(!contar_fichas(*(cont), b)){
                     return 4;
                 }
@@ -138,32 +138,36 @@ int turno(tablero *cont, jugador *a, jugador *b, const int contador, char *nombr
         }
     } while (op!=5);
 }
-void turno_movimiento(tablero *cont, jugador *a, jugador *b, char *nombre_archivo, const int id){
+void turno_movimiento(tablero *cont, jugador *a, jugador *b, char *nombre_archivo, const int id, const char *nombre_registro){
     char movimiento[]="pa1 a1";
     do{
         printf("\n\tIndique Jugada *");
         imprimir_color(a->representacion);
         printf("* ->");
         gets(movimiento);
-    }while (!verificar_movimiento(cont, a, b, movimiento, nombre_archivo, id));
+    }while (!verificar_movimiento(cont, a, b, movimiento, nombre_archivo, id, nombre_registro));
 }
 
-void nueva_partida(char *nombre_archivo){
+void nueva_partida(const char *nombre_archivo, const char *nombre_registro){
     int id=nuevo_id(nombre_archivo);
     jugador contA, contB;
     creacion_jugadores(&contA, &contB);
     tablero contC=generar_tablero(&contA, &contB);
     int contador=1, ciclo=1;
     do{
-        switch (turno(&contC, &contA, &contB, contador, nombre_archivo, id)) {
+        switch (turno(&contC, &contA, &contB, contador, nombre_archivo, id, nombre_registro)) {
             case 1:
                 break;
             case 4:
                 printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n", contA.nombre);
+                agregar_registro(nombre_registro, &contB, 0, 1);
+                agregar_registro(nombre_registro, &contA, 1, 0);
                 ciclo=0;
                 return;
             case 2:
                 printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n", contB.nombre);
+                agregar_registro(nombre_registro, &contB, 1, 0);
+                agregar_registro(nombre_registro, &contA, 0, 1);
                 ciclo=0;
                 return;
             case 3:
@@ -172,15 +176,19 @@ void nueva_partida(char *nombre_archivo){
                 return;
         }
         if(ciclo){
-            switch (turno(&contC, &contB, &contA, contador, nombre_archivo, id)) {
+            switch (turno(&contC, &contB, &contA, contador, nombre_archivo, id, nombre_registro)) {
                 case 1:
                     break;
                 case 4:
                     printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A QUEDADO SIN FICHAS\n\n", contB.nombre);
+                    agregar_registro(nombre_registro, &contB, 1, 0);
+                    agregar_registro(nombre_registro, &contA, 0, 1);
                     ciclo=0;
                     break;
                 case 2:
                     printf("\n\n\tEL JUGADOR '%s', HA GANADO LA PARTIDA DEBIDO A QUE SU CONTRINCANTE SE A RENDIDO\n\n", contA.nombre);
+                    agregar_registro(nombre_registro, &contB, 0, 1);
+                    agregar_registro(nombre_registro, &contA, 1, 0);
                     ciclo=0;
                     break;
                 case 3:
