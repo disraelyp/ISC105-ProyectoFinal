@@ -9,16 +9,11 @@ tablero generar_tablero(const jugador *pJugadorA, const jugador *pJugadorB) {
     for (int i = 0; i < COLUMNA; i++) {
         for (int j = 0; j < FILA; j++) {
             if (ubicaciones_iniciales(posicion) && posicion < (FILA * COLUMNA) / 2){
-                if(cont==10){
                     if(pJugadorB->representacion == blancas){
-                        *(*(bloques+i)+j)=creacion_bloque(pJugadorB, posicion, 1);
+                        *(*(bloques+i)+j)= creacion_bloque(pJugadorB, posicion, 1);
                     } else {
-                        *(*(bloques+i)+j)=creacion_bloque(pJugadorA, posicion, 1);
+                        *(*(bloques+i)+j)= creacion_bloque(pJugadorA, posicion, 1);
                     }
-                } else {
-                    cont++;
-                    *(*(bloques+i)+j)= creacion_bloque(NULL, posicion, 1);
-                }
             } else {
                 if (ubicaciones_iniciales(posicion) && posicion > (FILA * COLUMNA) / 2){
                     if(pJugadorB->representacion != blancas){
@@ -79,6 +74,7 @@ void cambio_posicion(tablero *tableroJuego, const jugador *pJugadorA, const juga
     } else{
         (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(pJugadorA, calcular_ubicacion(final), 1);
     }
+
     agregar_notacion(pNombre_archivo, id, pJugadorA, pJugadorB, inicial, final);
     tableroJuego->plano=contenedor;
 }
