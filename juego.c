@@ -75,9 +75,10 @@ void cambio_posicion(tablero *cont, const jugador *a, const jugador *b, const po
     } else{
         (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 1);
     }
-    escribir_archivo(nombre_archivo, id, a, b, inicial, final, curso);
+    agregar_notacion(nombre_archivo, id, a, b, inicial, final);
     cont->plano=contenedor;
 }
+
 void eliminar_posicion(tablero *cont, const jugador *a, const jugador *b, const posiciones inicial, const posiciones final, const char *nombre_archivo, int const id){
     bloque **contenedor=cont->plano;
     const int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
@@ -92,15 +93,13 @@ void eliminar_posicion(tablero *cont, const jugador *a, const jugador *b, const 
     (*(*(contenedor + calcular_cordenadaY(intermedia)) + calcular_cordenadaX(intermedia)))=creacion_bloque(NULL,
                                                                                                            calcular_ubicacion(
                                                                                                                    intermedia), 0);
-
     if (ubicaciones_externas(final) || estado == dama){
         (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 0);
     } else{
         (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 1);
     }
-    escribir_archivo(nombre_archivo, id, a, b, inicial, final, curso);
+    agregar_notacion(nombre_archivo, id, a, b, inicial, final);
     cont->plano=contenedor;
-    reajustar_tablero(cont);
 }
 
 int verificar_posiciones(const tablero tableroJuego, const posiciones inicial, const posiciones final){

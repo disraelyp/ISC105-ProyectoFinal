@@ -31,10 +31,6 @@ typedef enum {
     bloqueado,
     casilla_blanca
 } estado_bloque;
-typedef enum {
-    curso,
-    finalizado
-} estado_juego;
 
 typedef struct {
     char nombre[50];
@@ -64,24 +60,24 @@ typedef struct {
 
 typedef struct {
     int id_juego; // NUMERO DE PARTIDA
-    jugador *a; //PRINCIPAL
-    jugador *b;
-    posiciones inicial;
-    posiciones final;
-    estado_juego contenedor;
-
+    char nombreA[50];
+    color colorA;
+    char nombreB[50];
+    int inicial;
+    int final;
 } notacion_algebraica;
 
 
 
 int nuevo_id(char*);
 void leer_archivo(char*, int id);
-void escribir_archivo(char*, int, jugador*, jugador*, posiciones, posiciones, estado_bloque);
+void escribir_archivo(char*, const notacion_algebraica);
 int cantidad_notaciones(char*);
 FILE* abrir_archiv(char*, char *);
 void cerrar_archiv(FILE*);
 int verificar_archivo(char *nombre_archivo);
 void lista_notaciones(char *);
+void agregar_notacion(const char *nombre_archivo, int const id, jugador*, jugador*, posiciones, posiciones);
 
 
 

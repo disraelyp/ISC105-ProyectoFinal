@@ -1,8 +1,14 @@
 #include "header.h"
-
-void imprimir_datos(const jugador *cont){
-    printf("%s", cont->nombre);
-}
+void agregar_notacion(const char *nombre_archivo, int const id, jugador *a, jugador *b, posiciones inicial, posiciones final){
+    notacion_algebraica contA;
+    strcpy(contA.nombreA, a->nombre);
+    contA.colorA=a->representacion;
+    strcpy(contA.nombreB, b->nombre);
+    contA.id_juego=id;
+    contA.inicial=calcular_ubicacion(inicial);
+    contA.final=calcular_ubicacion(final);
+    escribir_archivo(nombre_archivo, contA);
+};
 void lista_notaciones(char *nombre_archivo){
     if(!verificar_archivo(nombre_archivo)){
         printf("\n\n\t NO TIENES TODAVIA NINGUN REGISTRO, JUEGA UNA PARTIDA Y INTENTALO MAS TARDE.\n\n\n");
@@ -11,24 +17,23 @@ void lista_notaciones(char *nombre_archivo){
     int cantidad_estudiante = cantidad_notaciones(nombre_archivo);
     int cantidad_leida = 0;
     FILE *archivo = abrir_archiv(nombre_archivo, "rb");
-
-    int contador=0;
+    printf("\n\t\tLISTA DE PATIDAS.\n");
+    int contador=0, seguro=0;
     while (cantidad_leida<cantidad_estudiante){
         notacion_algebraica tmp;
         fread(&tmp, sizeof(notacion_algebraica), 1, archivo);
-        imprimir_datos(tmp.a);
+        if(seguro!=tmp.id_juego){
+            printf("\n#%02d - %s vs %s", contador+1, tmp.nombreA, tmp.nombreB);
+            seguro=tmp.id_juego;
+        }
         contador++;
         cantidad_leida++;
     }
     cerrar_archiv(archivo);
-    printf("\n\n\tINGRLIZA (1-%d) -> ", cantidad_estudiante);
-    int op=captura_int(1, cantidad_estudiante);
-    leer_archivo(nombre_archivo, op);
+    printf("\n\n\tINGRESE EL NUMERO DE LA PARTIDA QUE DESEA VISUALIZAR (1-%d) -> ", cantidad_estudiante);
+    leer_archivo(nombre_archivo, captura_int(1, cantidad_estudiante));
     printf("\n\n");
 }
-
-
-
 int nuevo_id(char *nombre_archivo){
     if(!verificar_archivo(nombre_archivo)){
         return 1;
@@ -36,39 +41,40 @@ int nuevo_id(char *nombre_archivo){
     int cantidad_estudiante = cantidad_notaciones(nombre_archivo);
     int cantidad_leida = 0;
     FILE *archivo = abrir_archiv(nombre_archivo, "rb");
+    int contenedor=0;
     while (cantidad_leida<cantidad_estudiante){
         notacion_algebraica tmp;
         fread(&tmp, sizeof(notacion_algebraica), 1, archivo);
-        if(cantidad_leida<cantidad_estudiante){
-            cerrar_archiv(archivo);
-            return tmp.id_juego+1;
-        }
         cantidad_leida++;
+        if(tmp.id_juego!=contenedor){
+            contenedor = tmp.id_juego;
+        }
     }
+    cerrar_archiv(archivo);
+    return contenedor+1;
 }
 void leer_archivo(char *nombre_archivo, int id){
-    int cantidad_estudiante = cantidad_notaciones(nombre_archivo);
+    int const cantidad_estudiante = cantidad_notaciones(nombre_archivo);
     int cantidad_leida = 0;
     FILE *archivo = abrir_archiv(nombre_archivo, "rb");
-    //
+    printf("\n");
     while (cantidad_leida<cantidad_estudiante){
         notacion_algebraica tmp;
         fread(&tmp, sizeof(notacion_algebraica), 1, archivo);
         if(tmp.id_juego==id){
-            imprimir_representacion(tmp.a->representacion);
-            imprimir_posiciones(tmp.inicial);
+            imprimir_posiciones(calcular_posicion(tmp.inicial));
             printf(" ");
-            imprimir_posiciones(tmp.final);
+            imprimir_posiciones(calcular_posicion(tmp.final));
             printf("\n");
-            cantidad_leida++;
         }
+        cantidad_leida++;
     }
     cerrar_archiv(archivo);
 }
-void escribir_archivo(char *nombre_archivo, int id, jugador *a, jugador *b, posiciones inicial, posiciones final, estado_bloque estado){
+void escribir_archivo(char *nombre_archivo, const notacion_algebraica notacion){
+    printf("%s", notacion.nombreA);
     FILE *archivo = abrir_archiv(nombre_archivo, "a+b");
-    notacion_algebraica tmp = {id, a, b, inicial, final, estado};
-    fwrite(&tmp, sizeof(notacion_algebraica), 1, archivo);
+    fwrite(&notacion, sizeof(notacion_algebraica), 1, archivo);
     cerrar_archiv(archivo);
 }
 int cantidad_notaciones(char *nombre){
