@@ -8,7 +8,7 @@ void agregar_notacion(const char *ppNombre_archivo, int const id, jugador *a, ju
     contA.id_juego=id;
     contA.inicial=calcular_ubicacion(inicial);
     contA.final=calcular_ubicacion(final);
-    escribir_archivo(ppNombre_archivo, contA);
+    agregar_record(ppNombre_archivo, contA);
 }
 void lista_notaciones(const char *pNombre_archivo){
     if(!verificar_archivo(pNombre_archivo)){
@@ -32,7 +32,7 @@ void lista_notaciones(const char *pNombre_archivo){
     }
     cerrar_archivo(archivo);
     printf("\n\n\tINGRESE EL NUMERO DE LA PARTIDA QUE DESEA VISUALIZAR (1-%d) -> ", cantidad_id(pNombre_archivo));
-    leer_archivo(pNombre_archivo, captura_int(1, cantidad_id(pNombre_archivo)));
+    lista_records(pNombre_archivo, captura_int(1, cantidad_id(pNombre_archivo)));
     printf("\n\n\n");
 }
 int nuevo_id(const char *pNombre_archivo){
@@ -73,7 +73,7 @@ int cantidad_id(const char *pNombre_archivo){
     cerrar_archivo(archivo);
     return contenedor;
 }
-void leer_archivo(const char *pNombre_archivo, int id){
+void lista_records(const char *pNombre_archivo, int id){
     int const cantidad_estudiante = cantidad_notaciones(pNombre_archivo);
     int contL = 0;
     FILE *archivo = abrir_archivo(pNombre_archivo, "rb");
@@ -92,7 +92,7 @@ void leer_archivo(const char *pNombre_archivo, int id){
     }
     cerrar_archivo(archivo);
 }
-void escribir_archivo(const char *pNombre_archivo, const notacion_algebraica notacion){
+void agregar_record(const char *pNombre_archivo, notacion_algebraica notacion){
     FILE *archivo = abrir_archivo(pNombre_archivo, "a+b");
     fwrite(&notacion, sizeof(notacion_algebraica), 1, archivo);
     cerrar_archivo(archivo);
@@ -211,5 +211,4 @@ void leer_registro(const char *pNombre_archivo){
     free(lista_elementos);
     printf("\n-------------------------------------------------------------------------------\n\n\n");
 }
-
 

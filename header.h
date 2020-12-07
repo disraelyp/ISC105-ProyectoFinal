@@ -73,8 +73,8 @@ void agregar_notacion(const char*, int const id, jugador*, jugador*, posiciones,
 void lista_notaciones(const char*); // PRESENTA UNA LISTA DE NOTACIONES
 int nuevo_id(const char*); // CREA UN NUEVO ID
 int cantidad_id(const char*); // CUENTA LA CANTIDAD DE ID EN UN ARCHIVO
-void leer_archivo(const char*, int id); // PRESENTA UNA LISTA DE RECORD DE JUGADORES
-void escribir_archivo(const char*, notacion_algebraica); // AGREGA UN REGISTRO EN EL ARCHIVO DE RECORDS
+void lista_records(const char*, int id); // PRESENTA UNA LISTA DE RECORD DE JUGADORES
+void agregar_record(const char*, notacion_algebraica); // AGREGA UN REGISTRO EN EL ARCHIVO DE RECORDS
 int cantidad_notaciones(const char*); // CANTIDAD DE NOTACIONES
 FILE* abrir_archivo(const char*, char *funcion); // ABRIR UN ARCHIVO
 void cerrar_archivo(FILE*); // CERRAR UN ARCHIVO
@@ -132,7 +132,6 @@ void imprimir_bloque(const bloque); // IMPRIME UN BLOQUE
 void imprimir_tablero(const tablero); // IMPRIME EL TABLERO
 void imprimir_color(const color); // IMPRIME EL COLOR
 void imprimir_representacion(const color); // IMPRIME LA PRIMERA LETRA DE UNA REPRESENTACION
-
 
 
 
