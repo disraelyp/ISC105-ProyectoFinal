@@ -1,6 +1,6 @@
 #include "header.h"
 
-tablero generar_tablero(const jugador *jugadorA, const jugador *jugadorB) {
+tablero generar_tablero(const jugador *pJugadorA, const jugador *pJugadorB) {
     bloque **bloques = (bloque **) malloc(8 * sizeof(bloque));
     for (int i = 0; i<FILA; ++i) {
         *(bloques+i) = (bloque *) malloc(8* sizeof(bloque));
@@ -10,10 +10,10 @@ tablero generar_tablero(const jugador *jugadorA, const jugador *jugadorB) {
         for (int j = 0; j < FILA; j++) {
             if (ubicaciones_iniciales(posicion) && posicion < (FILA * COLUMNA) / 2){
                 if(cont==10){
-                    if(jugadorB->representacion == blancas){
-                        *(*(bloques+i)+j)=creacion_bloque(jugadorB, posicion, 1);
+                    if(pJugadorB->representacion == blancas){
+                        *(*(bloques+i)+j)=creacion_bloque(pJugadorB, posicion, 1);
                     } else {
-                        *(*(bloques+i)+j)=creacion_bloque(jugadorA, posicion, 1);
+                        *(*(bloques+i)+j)=creacion_bloque(pJugadorA, posicion, 1);
                     }
                 } else {
                     cont++;
@@ -21,10 +21,10 @@ tablero generar_tablero(const jugador *jugadorA, const jugador *jugadorB) {
                 }
             } else {
                 if (ubicaciones_iniciales(posicion) && posicion > (FILA * COLUMNA) / 2){
-                    if(jugadorB->representacion != blancas){
-                        *(*(bloques+i)+j)= creacion_bloque(jugadorB, posicion, 1);
+                    if(pJugadorB->representacion != blancas){
+                        *(*(bloques+i)+j)= creacion_bloque(pJugadorB, posicion, 1);
                     } else {
-                        *(*(bloques+i)+j)= creacion_bloque(jugadorA, posicion, 1);
+                        *(*(bloques+i)+j)= creacion_bloque(pJugadorA, posicion, 1);
                     }
                 } else {
                     *(*(bloques+i)+j)= creacion_bloque(NULL, posicion, 1);
@@ -33,12 +33,12 @@ tablero generar_tablero(const jugador *jugadorA, const jugador *jugadorB) {
             posicion++;
         }
     }
-    tablero contenedor={jugadorA, 12, jugadorB, 12, bloques};
+    tablero contenedor={pJugadorA, 12, pJugadorB, 12, bloques};
     return contenedor;
 }
-peon creacion_peon(const jugador *jugadorA, const int posicion, const int estado){
+peon creacion_peon(const jugador *pJugador, const int posicion, const int estado){
     peon contenedor;
-    contenedor.propietario=jugadorA;
+    contenedor.propietario=pJugador;
     contenedor.posicion=calcular_posicion(posicion);
     if (estado){
         contenedor.estado=basica;
@@ -47,14 +47,14 @@ peon creacion_peon(const jugador *jugadorA, const int posicion, const int estado
     }
     return contenedor;
 }
-bloque creacion_bloque(const jugador *jugador, const int contB, const int estado){
+bloque creacion_bloque(const jugador *pJugador, const int contB, const int estado){
     bloque contenedor;
     if (ubicaciones_jugables(contB)){
-        if(jugador==NULL){
+        if(pJugador == NULL){
             contenedor.estado=disponible;
         } else {
             contenedor.estado=bloqueado;
-            contenedor.peones=creacion_peon(jugador, contB, estado);
+            contenedor.peones=creacion_peon(pJugador, contB, estado);
         }
         contenedor.posicion=calcular_posicion(contB);
     } else {
@@ -63,8 +63,8 @@ bloque creacion_bloque(const jugador *jugador, const int contB, const int estado
     }
     return contenedor;
 }
-void cambio_posicion(tablero *cont, const jugador *a, const jugador *b, const posiciones inicial, const posiciones final, const char *nombre_archivo, int const id, const char *nombre_registro){
-    bloque **contenedor=cont->plano;
+void cambio_posicion(tablero *tableroJuego, const jugador *pJugadorA, const jugador *pJugadorB, const posiciones inicial, const posiciones final, const char *pNombre_archivo, int const id, const char *pNombre_registro){
+    bloque **contenedor=tableroJuego->plano;
     int const xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
     estado_peon estadoPeon;
     if((*(*(contenedor + yInicial) + xInicial)).peones.estado==dama){
@@ -75,15 +75,15 @@ void cambio_posicion(tablero *cont, const jugador *a, const jugador *b, const po
     (*(*(contenedor + yInicial) + xInicial))=creacion_bloque(NULL, calcular_ubicacion(inicial), 1);
 
     if (ubicaciones_externas(final) || estadoPeon == dama){
-        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 0);
+        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(pJugadorA, calcular_ubicacion(final), 0);
     } else{
-        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 1);
+        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(pJugadorA, calcular_ubicacion(final), 1);
     }
-    agregar_notacion(nombre_archivo, id, a, b, inicial, final);
-    cont->plano=contenedor;
+    agregar_notacion(pNombre_archivo, id, pJugadorA, pJugadorB, inicial, final);
+    tableroJuego->plano=contenedor;
 }
-void eliminar_posicion(tablero *cont, const jugador *a, const jugador *b, const posiciones inicial, const posiciones final, const char *nombre_archivo, int const id, const char *nombre_registro){
-    bloque **contenedor=cont->plano;
+void eliminar_posicion(tablero *tableroJuego, const jugador *pJugadorA, const jugador *pJugadorB, const posiciones inicial, const posiciones final, const char *pNombre_archivo, int const id, const char *pNombre_registro){
+    bloque **contenedor=tableroJuego->plano;
     const int xInicial=calcular_cordenadaX(inicial), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final), yFinal=calcular_cordenadaY(final);
     const posiciones intermedia =  posicion_intermedia(inicial, final);
     estado_peon estado;
@@ -97,12 +97,12 @@ void eliminar_posicion(tablero *cont, const jugador *a, const jugador *b, const 
                                                                                                            calcular_ubicacion(
                                                                                                                    intermedia), 0);
     if (ubicaciones_externas(final) || estado == dama){
-        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 0);
+        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(pJugadorA, calcular_ubicacion(final), 0);
     } else{
-        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(a, calcular_ubicacion(final), 1);
+        (*(*(contenedor + yFinal) + xFinal))=creacion_bloque(pJugadorA, calcular_ubicacion(final), 1);
     }
-    agregar_notacion(nombre_archivo, id, a, b, inicial, final);
-    cont->plano=contenedor;
+    agregar_notacion(pNombre_archivo, id, pJugadorA, pJugadorB, inicial, final);
+    tableroJuego->plano=contenedor;
 }
 int verificar_posiciones(const tablero tableroJuego, const posiciones inicial, const posiciones final){
     bloque **pPlano=tableroJuego.plano;
@@ -144,18 +144,18 @@ int verificar_posiciones(const tablero tableroJuego, const posiciones inicial, c
     }
     return 0;
 }
-int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movimiento, const char *nombre_archivo, const int id, const char *nombre_registro){
+int verificar_movimiento(tablero *tableroJuego, jugador *pJugadorA, jugador *pJugadorB, const char *movimiento, const char *pNombre_archivo, const int id, const char *pNombre_registros){
     if (verifica_entrada(movimiento)){
         char posicion_inicial[3]={*(movimiento+1), *(movimiento+2), '\0'}, posicion_final[3]={*(movimiento+4), *(movimiento+5), '\0'};
         posiciones inicial = extraer_posiciones(posicion_inicial), final = extraer_posiciones(posicion_final);
         if(posiciones_jugables(inicial) && posiciones_jugables(final)){
-            if(recorrer_tablero(*(cont), a, b)){
+            if(recorrer_tablero(*(tableroJuego), pJugadorA, pJugadorB)){
                 if(posiciones_diagonales(inicial, final)){
-                    if(parametros_eliminar(*(cont), inicial, final)){
-                        if(verificar_propietario(*(cont), a, inicial)){
-                            eliminar_posicion(cont, a, b, inicial, final, nombre_archivo, id, nombre_registro);
-                            reajustar_tablero(cont);
-                            if(!recorrer_tablero(*(cont), a, b)){
+                    if(parametros_eliminar(*(tableroJuego), inicial, final)){
+                        if(verificar_propietario(*(tableroJuego), pJugadorA, inicial)){
+                            eliminar_posicion(tableroJuego, pJugadorA, pJugadorB, inicial, final, pNombre_archivo, id, pNombre_registros);
+                            reajustar_tablero(tableroJuego);
+                            if(!recorrer_tablero(*(tableroJuego), pJugadorA, pJugadorB)){
                                 return 1;
                             }
                         } else{
@@ -165,17 +165,17 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
                         printf("\n\tERROR: EL MOVIMIENTO ES INVALIDO.\n");
                     }
                 }else{
-                    if(verificar_posiciones(*(cont), inicial, final)){
+                    if(verificar_posiciones(*(tableroJuego), inicial, final)){
                         printf("\n\tERROR: EL MOVIMIENTO ES INVALIDO, DEBIDO A QUE UNA DE TUS FICHAS DEBE ELEMINAR UNA FICHA OPONENTE.\n");
                     } else {
                         printf("\n\tERROR: EL MOVIMIENTO ES INVALIDO.\n");
                     }
                 }
             } else {
-                if(verificar_posiciones(*(cont), inicial, final)){
-                    if(verificar_propietario(*(cont), a, inicial)){
-                        cambio_posicion(cont, a, b, inicial, final, nombre_archivo, id, nombre_registro);
-                        reajustar_tablero(cont);
+                if(verificar_posiciones(*(tableroJuego), inicial, final)){
+                    if(verificar_propietario(*(tableroJuego), pJugadorA, inicial)){
+                        cambio_posicion(tableroJuego, pJugadorA, pJugadorB, inicial, final, pNombre_archivo, id, pNombre_registros);
+                        reajustar_tablero(tableroJuego);
                         return 1;
                     } else{
                         printf("\n\tERROR: LA FICHA A MOVER, LE PERTENECE A OTRO JUGADOR.\n");
@@ -193,8 +193,8 @@ int verificar_movimiento(tablero *cont, jugador *a, jugador *b, const char *movi
     }
     return 0;
 }
-void reajustar_tablero(tablero *cont){
-    bloque **contenedor=cont->plano;
+void reajustar_tablero(tablero *tableroJuego){
+    bloque **contenedor=tableroJuego->plano;
     int contador=0;
     for (int i = 0; i < COLUMNA; ++i) {
         for (int j = 0; j < FILA; ++j) {
@@ -202,18 +202,17 @@ void reajustar_tablero(tablero *cont){
             contador++;
         }
     }
-    cont->plano=contenedor;
-    cont->total_fichasA=contar_fichas(*(cont), cont->jugadorA);
-    cont->total_fichasB=contar_fichas(*(cont), cont->jugadorB);
+    tableroJuego->plano=contenedor;
+    tableroJuego->total_fichasA=contar_fichas(*(tableroJuego), tableroJuego->jugadorA);
+    tableroJuego->total_fichasB=contar_fichas(*(tableroJuego), tableroJuego->jugadorB);
 }
-int recorrer_tablero(const tablero cont, const jugador *a, const jugador *b){
-    bloque const **contenedor=cont.plano;
+int recorrer_tablero(const tablero tableroJuego, const jugador *pJugadorA, const jugador *pJugadorB){
+    bloque const **contenedor=tableroJuego.plano;
     int contador=0;
-
     for (int i = 0; i < COLUMNA; ++i) {
         for (int j = 0; j < FILA; ++j) {
-            if((*(*(contenedor + i) + j)).estado!=casilla_blanca && (*(*(contenedor + i) + j)).peones.propietario == a){
-                if(verificar_eliminar(contenedor, b, calcular_posicion(contador + 1))) {
+            if((*(*(contenedor + i) + j)).estado!=casilla_blanca && (*(*(contenedor + i) + j)).peones.propietario == pJugadorA){
+                if(verificar_eliminar(contenedor, pJugadorB, calcular_posicion(contador + 1))) {
                     return 1;
                 }
             }
@@ -222,16 +221,16 @@ int recorrer_tablero(const tablero cont, const jugador *a, const jugador *b){
     }
     return 0;
 }
-int verificar_eliminar(const bloque **contenedor, const jugador *b, const posiciones ficha){
+int verificar_eliminar(const bloque **bloques, const jugador *pJugador, const posiciones ficha){
     int contador=0;
     for (int i = 0; i < COLUMNA; i++) {
         for (int j = 0; j < FILA; j++) {
-            if((*(*(contenedor + i) + j)).peones.propietario == b){
-                if((*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.propietario->representacion==blancas || (*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.estado==dama) {
+            if((*(*(bloques + i) + j)).peones.propietario == pJugador){
+                if((*(*(bloques + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.propietario->representacion == blancas || (*(*(bloques + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.estado == dama) {
                     if(calcular_cordenadaX(ficha)+1<=7 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)+1<=7 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
                         if ((calcular_cordenadaX(ficha) + 1 == calcular_cordenadaX(calcular_posicion(contador + 1))) && (calcular_cordenadaY(ficha) + 1 == calcular_cordenadaY(calcular_posicion(contador + 1)))) { // ARREGLAR
                             if((calcular_cordenadaY(ficha)+2)<=7 && (calcular_cordenadaX(ficha)+2)<=7){
-                                if ((*(*(contenedor + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha)+2)).estado == disponible) {
+                                if ((*(*(bloques + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha) + 2)).estado == disponible) {
                                     return 1;
                                 }
                             }
@@ -240,18 +239,18 @@ int verificar_eliminar(const bloque **contenedor, const jugador *b, const posici
                     if(calcular_cordenadaX(ficha)-1>=0 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)+1<=7 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
                         if ((calcular_cordenadaX(ficha)-1 == calcular_cordenadaX(calcular_posicion(contador + 1))) && (calcular_cordenadaY(ficha) + 1 == calcular_cordenadaY(calcular_posicion(contador + 1)))) {
                             if((calcular_cordenadaY(ficha)+2)<=7 && (calcular_cordenadaX(ficha)-2)>=0){
-                                if ((*(*(contenedor + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha)-2)).estado == disponible) {
+                                if ((*(*(bloques + calcular_cordenadaY(ficha) + 2) + calcular_cordenadaX(ficha) - 2)).estado == disponible) {
                                     return 1;
                                 }
                             }
                         }
                     }
                 }
-                if((*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.propietario->representacion==negras || (*(*(contenedor + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.estado==dama) {
+                if((*(*(bloques + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.propietario->representacion == negras || (*(*(bloques + calcular_cordenadaY(ficha)) + calcular_cordenadaX(ficha))).peones.estado == dama) {
                     if(calcular_cordenadaX(ficha)-1>=0 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)-1>=0 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
                         if((calcular_cordenadaX(ficha)-1 == calcular_cordenadaX(calcular_posicion(contador+1))) && (calcular_cordenadaY(ficha) - 1 == calcular_cordenadaY(calcular_posicion(contador+1)))){
                             if((calcular_cordenadaY(ficha)-2)>=0 && (calcular_cordenadaX(ficha)-2)>=0){
-                                if((*(*(contenedor + calcular_cordenadaY(ficha)-2) + calcular_cordenadaX(ficha)-2)).estado==disponible){
+                                if((*(*(bloques + calcular_cordenadaY(ficha) - 2) + calcular_cordenadaX(ficha) - 2)).estado == disponible){
                                     return 1;
                                 }
                             }
@@ -260,7 +259,7 @@ int verificar_eliminar(const bloque **contenedor, const jugador *b, const posici
                     if(calcular_cordenadaX(ficha)+1<=7 && calcular_cordenadaX(calcular_posicion(contador + 1))<=7 && calcular_cordenadaY(ficha)-1>=0 && calcular_cordenadaY(calcular_posicion(contador + 1))<=7){
                         if((calcular_cordenadaX(ficha)+1 == calcular_cordenadaX(calcular_posicion(contador+1))) && (calcular_cordenadaY(ficha)-1 == calcular_cordenadaY(calcular_posicion(contador+1)))){ // ARREGLAR
                             if((calcular_cordenadaY(ficha)-2)>=0 && (calcular_cordenadaX(ficha)+2)<=7){
-                                if((*(*(contenedor + calcular_cordenadaY(ficha)-2) + calcular_cordenadaX(ficha)+2)).estado==disponible){
+                                if((*(*(bloques + calcular_cordenadaY(ficha) - 2) + calcular_cordenadaX(ficha) + 2)).estado == disponible){
                                     return 1;
                                 }
                             }
@@ -273,8 +272,8 @@ int verificar_eliminar(const bloque **contenedor, const jugador *b, const posici
     }
     return 0;
 }
-int parametros_eliminar(const tablero cont, const posiciones inicial, const posiciones final){
-    const bloque **contenedor=cont.plano;
+int parametros_eliminar(const tablero tableroJuego, const posiciones inicial, const posiciones final){
+    const bloque **contenedor=tableroJuego.plano;
     posiciones intermedia = posicion_intermedia(inicial, final);
     int xIntermedia=calcular_cordenadaX(intermedia), yIntermedia=calcular_cordenadaY(intermedia);
     int xInicial =calcular_cordenadaX(inicial), yFinal=calcular_cordenadaY(final), yInicial=calcular_cordenadaY(inicial), xFinal=calcular_cordenadaX(final);

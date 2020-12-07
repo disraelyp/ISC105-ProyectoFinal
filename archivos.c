@@ -1,6 +1,5 @@
 #include "header.h"
 
-
 void agregar_notacion(const char *ppNombre_archivo, int const id, jugador *a, jugador *b, posiciones inicial, posiciones final){
     notacion_algebraica contA;
     strcpy(contA.nombreA, a->nombre);
@@ -10,7 +9,7 @@ void agregar_notacion(const char *ppNombre_archivo, int const id, jugador *a, ju
     contA.inicial=calcular_ubicacion(inicial);
     contA.final=calcular_ubicacion(final);
     escribir_archivo(ppNombre_archivo, contA);
-};
+}
 void lista_notaciones(const char *pNombre_archivo){
     if(!verificar_archivo(pNombre_archivo)){
         printf("\n\n\tERROR: NO TIENES TODAVIA NINGUN REGISTRO, JUEGA UNA PARTIDA Y DESPUES INTENTALO.\n\n\n");

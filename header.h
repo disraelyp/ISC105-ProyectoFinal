@@ -102,8 +102,36 @@ void turno_movimiento(tablero*, jugador*, jugador*, char*, const int, const char
 void nueva_partida(const char*, const char*); // NUEVA PARTIDA
 
 //ARCHIVO 'juego.c'
+tablero generar_tablero(const jugador*, const jugador*); // GENERA UNA ESTRUCTURA DE TIPO TABLERO
+peon creacion_peon(const jugador*, const int, const int); // GENERA UNA ESTRUCTURA DE TIPO PEON
+bloque creacion_bloque(const jugador*, const int, const int); // GENERA UNA ESTRUCTURA DE TIPO BLOQUE
+void cambio_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, int const, const char*); // CAMBIA DE POSICION DOS FICHAS
+void eliminar_posicion(tablero*, const jugador*, const jugador*, const posiciones, const posiciones, const char*, int const, const char*); // CAMBIA DE POSCION DOS FICHAS Y ELIMINA UNA
+int verificar_posiciones(const tablero, const posiciones, const posiciones); // VERIFICA SI DOS POSICIONES SON ACCESIBLES POR UNA FICHA
+int verificar_movimiento(tablero*, jugador*, jugador*, const char*, const char*, const int, const char*); // VERIFICA SI EL MOVIMIENTO ES VALIDO
+void reajustar_tablero(tablero*); // REAJUSTA EL TABLERO Y LAS ESTADISTICAS
+int recorrer_tablero(const tablero, const jugador*, const jugador*); // RECORRE TODAS LAS FICHAS DEL TABLERO
+int verificar_eliminar(const bloque**, const jugador*, const posiciones); // VERIFICA SI SE PUEDE ELIMINAR UNA FICHA
+int parametros_eliminar(const tablero, const posiciones, const posiciones); // VERIFICA SI UNA ELIMINACION CUMPLE TODOS LOS PARAMETROS ANTES DE REALIZARLA
+int verificar_ahogado(const tablero); // VERIFICA SI HAY MOVIMIENTOS DISPONIBLES PARA LS FICHAS
 
-
+//ARCHIVO 'tablero.c'
+posiciones extraer_posiciones(const char*); // EXTRAE LAS POSICIONES UNA CADENA DE TEXTO
+void imprimir_posiciones(const posiciones); // IMPRIME POSCICIONES
+int posiciones_jugables(const posiciones); // CALCULA SI UNA POSICION ES JUGABLE
+int posiciones_diagonales(const posiciones, const posiciones); // CALCULA SI DOS POSICIONES ESTAN EN UNA DIAGONAL
+posiciones posicion_intermedia(const posiciones, const posiciones); // CALCULA LA POSICION INTERMEDIA DE DOS FICHAS
+posiciones calcular_posicion(const int); // CALCULA LA POSCION EXACTA DE UNA UBICACION
+int ubicaciones_externas(const posiciones); // CALCULA SI UNA POSCICION ES UNA UBICACION EXTERNA
+int ubicaciones_iniciales(const int); // CALCULA SI UNA POSCICION ES UNA UBICACION INICIAL
+int ubicaciones_jugables(const int); // CALCULA SI UNA POSCICION ES UNA UBICACION JUGABLE
+int calcular_ubicacion(const posiciones); // CALCULA UNA UBICACION
+int calcular_cordenadaX(const posiciones); //CALCULA LAS CORDENADAS DE UNA POSICION
+int calcular_cordenadaY(const posiciones);//CALCULA LAS CORDENADAS DE UNA POSICION
+void imprimir_bloque(const bloque); // IMPRIME UN BLOQUE
+void imprimir_tablero(const tablero); // IMPRIME EL TABLERO
+void imprimir_color(const color); // IMPRIME EL COLOR
+void imprimir_representacion(const color); // IMPRIME LA PRIMERA LETRA DE UNA REPRESENTACION
 
 
 
